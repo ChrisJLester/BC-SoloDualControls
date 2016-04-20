@@ -12,7 +12,8 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Will this device be:"
+        android:text="Will this device be for:"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:id="@+id/textView2" />
@@ -20,36 +21,141 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Solo flight controls"
-        android:id="@+id/textView"
-        android:layout_above="@+id/imageView"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Stream and camera controls"
-        android:id="@+id/textView3"
-        android:layout_above="@+id/imageView2"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageView"
-        android:background="@drawable/flightcontrols"
+        android:text="or"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_centerVertical="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_centerHorizontal="true"
+        android:id="@+id/textView" />
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageView2"
-        android:background="@drawable/cameracontrols"
-        android:layout_alignTop="@+id/imageView"
-        android:layout_alignRight="@+id/textView3"
-        android:layout_alignEnd="@+id/textView3" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_toLeftOf="@+id/textView"
+        android:layout_toStartOf="@+id/textView"
+        android:layout_below="@+id/textView2"
+        android:id="@+id/relativeLayout"
+        android:onClick="makeToast">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/circle"
+            android:layout_margin="100dp"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/flightcontrols"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/imageView" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Solo flight controls"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_above="@+id/imageView"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
+            android:id="@+id/textView7" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="• Directional controls"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/textView3"
+            android:layout_below="@+id/textView4"
+            android:layout_alignLeft="@+id/textView4"
+            android:layout_alignStart="@+id/textView4" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="• Rotation controls"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/textView4"
+            android:layout_below="@+id/textView8"
+            android:layout_alignLeft="@+id/textView8"
+            android:layout_alignStart="@+id/textView8" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="• Altitude controls"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_below="@+id/imageView"
+            android:layout_alignLeft="@+id/imageView"
+            android:layout_alignStart="@+id/imageView"
+            android:layout_marginTop="10dp"
+            android:id="@+id/textView8" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@+id/textView"
+        android:layout_alignTop="@+id/relativeLayout"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/circle"
+            android:layout_margin="100dp"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/cameracontrols"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/imageView2" />
+
+        <TextView
+            android:layout_marginBottom="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stream and camera controls"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_above="@+id/imageView2"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="• Live stream"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_below="@+id/imageView2"
+            android:layout_alignLeft="@+id/imageView2"
+            android:layout_alignStart="@+id/imageView2"
+            android:layout_marginTop="5dp"
+            android:id="@+id/textView5" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="• Look up/down"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_below="@+id/textView5"
+            android:layout_alignLeft="@+id/textView5"
+            android:layout_alignStart="@+id/textView5"
+            android:id="@+id/textView6" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="• Screenshot/Recording controls"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_below="@+id/textView6"
+            android:layout_alignLeft="@+id/textView6"
+            android:layout_alignStart="@+id/textView6" />
+
+    </RelativeLayout>
+
 </RelativeLayout>
