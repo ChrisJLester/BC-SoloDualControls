@@ -36,7 +36,7 @@
         android:layout_toStartOf="@+id/textView"
         android:layout_below="@+id/textView2"
         android:id="@+id/relativeLayout"
-        android:onClick="makeToast">
+        android:onClick="flight_controls">
 
         <ImageView
             android:layout_width="match_parent"
@@ -99,9 +99,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_toRightOf="@+id/textView"
+        android:layout_toEndOf="@id/textView"
         android:layout_alignTop="@+id/relativeLayout"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true">
+        android:layout_alignParentEnd="true"
+        android:onClick="stream_controls">
 
         <ImageView
             android:layout_width="match_parent"
