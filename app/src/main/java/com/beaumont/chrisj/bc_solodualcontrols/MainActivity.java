@@ -138,8 +138,4 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("btdevice", mDevice);
         startActivity(intent);
     }
-
-    private void makeToast(String m){
-        Toast.makeText(getApplicationContext(), m, Toast.LENGTH_SHORT).show();
-    }
 }
