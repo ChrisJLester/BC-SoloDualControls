@@ -3,16 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.beaumont.chrisj.bc_solodualcontrols.FlightControlsActivity">
 
-    <RelativeLayout
-        android:id="@+id/frame_connect"
+    <RelativeLayout android:id="@+id/frame_connect"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="visible">
 
         <TextView
             android:layout_width="wrap_content"
@@ -55,4 +51,235 @@
 
 
     </RelativeLayout>
+
+    <TableLayout android:id="@+id/frame_controls"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:stretchColumns="*">
+
+        <TableRow
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <LinearLayout
+                android:id="@+id/ns_rotate_left"
+                android:onClick="onBtnDroneRotateLeft"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:layout_span="2"
+                android:layout_height="fill_parent"
+                android:padding="20dp">
+
+                <ImageView
+                    android:id="@+id/arrow_NS_rotate_left"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:background="@drawable/arrow_rotate_left"/>
+
+                <TextView
+                    android:id="@+id/lbl_NS_rotate_left"
+                    android:visibility="visible"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rotate anti-clockwise"
+                    android:textSize="30sp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/Ns_up"
+                android:onClick="onBtnDroneForward"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="20dp"
+                android:layout_span="2"
+                android:layout_height="fill_parent">
+
+                <ImageView
+                    android:id="@+id/arrow_NS_up"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:background="@drawable/arrow_forward"/>
+
+                <TextView
+                    android:id="@+id/lbl_NS_up"
+                    android:visibility="visible"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Move forwards"
+                    android:textSize="30sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ns_rotate_right"
+                android:onClick="onBtnDroneRotateRight"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="20dp"
+                android:layout_span="2"
+                android:layout_height="fill_parent">
+
+                <ImageView
+                    android:id="@+id/arrow_NS_rotate_right"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:background="@drawable/arrow_rotate_right"/>
+
+                <TextView
+                    android:id="@+id/lbl_ns_rotate_right"
+                    android:visibility="visible"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rotate clockwise"
+                    android:textSize="30sp" />
+            </LinearLayout>
+        </TableRow>
+
+        <TableRow
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <LinearLayout
+                android:id="@+id/ns_left"
+                android:onClick="onBtnDroneLeft"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="20dp"
+                android:layout_span="2"
+                android:layout_height="fill_parent">
+
+                <ImageView
+                    android:id="@+id/arrow_NS_left"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:background="@drawable/arrow_left"/>
+
+                <TextView
+                    android:id="@+id/lbl_NS_left"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Move left"
+                    android:visibility="visible"
+                    android:textSize="30sp"/>
+            </LinearLayout>
+
+            <RelativeLayout
+                android:padding="20dp"
+                android:layout_span="2"
+                android:layout_height="fill_parent"
+                android:gravity="center">
+
+                <Button
+                    android:id="@+id/btnAction"
+                    android:text="Connect Solo"
+                    android:textSize="30sp"
+                    android:onClick="onBtnAction"
+                    android:layout_width="180dp"
+                    android:layout_height="180dp"
+                    android:background="@drawable/rounded_button_conn"/>
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/ns_right"
+                android:onClick="onBtnDroneRight"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="20dp"
+                android:layout_span="2"
+                android:layout_height="fill_parent">
+
+                <ImageView
+                    android:id="@+id/arrow_NS_right"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:background="@drawable/arrow_right"/>
+
+                <TextView
+                    android:id="@+id/lbl_NS_right"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Move right"
+                    android:visibility="visible"
+                    android:textSize="30sp" />
+            </LinearLayout>
+        </TableRow>
+
+        <TableRow
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <LinearLayout
+                android:id="@+id/ns_decrease_alt"
+                android:onClick="onBtnDroneDecreaseAlt"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="20dp"
+                android:layout_span="2"
+                android:layout_height="fill_parent">
+
+                <ImageView
+                    android:id="@+id/arrow_NS_decrease_alt"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:background="@drawable/arrow_alt_dec"/>
+
+                <TextView
+                    android:id="@+id/lbl_NS_decrease_alt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Decrease altitude"
+                    android:visibility="visible"
+                    android:textSize="30sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ns_down"
+                android:onClick="onBtnDroneBackward"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="20dp"
+                android:layout_span="2"
+                android:layout_height="fill_parent">
+
+                <ImageView
+                    android:id="@+id/arrow_NS_down"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:background="@drawable/arrow_backward"/>
+
+                <TextView
+                    android:id="@+id/lbl_NS_down"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Move backwards"
+                    android:visibility="visible"
+                    android:textSize="30sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ns_increase_alt"
+                android:onClick="onBtnDroneIncreaseAlt"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="20dp"
+                android:layout_span="2"
+                android:layout_height="fill_parent">
+
+                <ImageView
+                    android:id="@+id/arrow_NS_increase_alt"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:background="@drawable/arrow_alt_inc"/>
+
+                <TextView
+                    android:id="@+id/lbl_NS_increase_alt"
+                    android:visibility="visible"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Increase altitude"
+                    android:textSize="30sp" />
+            </LinearLayout>
+        </TableRow>
+    </TableLayout>
 </RelativeLayout>
