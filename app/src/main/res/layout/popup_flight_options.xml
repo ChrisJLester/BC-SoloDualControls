@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+    <LinearLayout
+        android:id="@+id/linear_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true">
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Directional controls"
+            android:checked="false"
+            android:id="@+id/chkDirectional" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rotation controls"
+            android:checked="false"
+            android:id="@+id/chkRotation" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Altitude controls"
+            android:checked="false"
+            android:id="@+id/chkAltitude" />
+
+        <Space
+            android:id="@+id/space"
+            android:layout_width="50dp"
+            android:layout_height="20dp" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Display arrows"
+            android:checked="false"
+            android:id="@+id/chkArrows" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Display descriptive text"
+            android:checked="false"
+            android:id="@+id/chkText" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linear_layout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:text="To bring the options back, press the 'Back' hardware button."/>
+
+</RelativeLayout>

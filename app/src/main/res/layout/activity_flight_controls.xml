@@ -63,8 +63,8 @@
             android:gravity="center">
 
             <LinearLayout
-                android:id="@+id/ns_rotate_left"
-                android:onClick="onBtnDroneRotateLeft"
+                android:id="@+id/panel_rot_left"
+                android:onClick="btnButtonPress"
                 android:gravity="center"
                 android:orientation="vertical"
                 android:layout_span="2"
@@ -72,13 +72,13 @@
                 android:padding="20dp">
 
                 <ImageView
-                    android:id="@+id/arrow_NS_rotate_left"
+                    android:id="@+id/btnRotLeft"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
                     android:background="@drawable/arrow_rotate_left"/>
 
                 <TextView
-                    android:id="@+id/lbl_NS_rotate_left"
+                    android:id="@+id/lblRotLeft"
                     android:visibility="visible"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -87,8 +87,8 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/Ns_up"
-                android:onClick="onBtnDroneForward"
+                android:id="@+id/panel_up"
+                android:onClick="btnButtonPress"
                 android:gravity="center"
                 android:orientation="vertical"
                 android:padding="20dp"
@@ -96,13 +96,13 @@
                 android:layout_height="fill_parent">
 
                 <ImageView
-                    android:id="@+id/arrow_NS_up"
+                    android:id="@+id/btnUp"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
                     android:background="@drawable/arrow_forward"/>
 
                 <TextView
-                    android:id="@+id/lbl_NS_up"
+                    android:id="@+id/lblUp"
                     android:visibility="visible"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -111,8 +111,8 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/ns_rotate_right"
-                android:onClick="onBtnDroneRotateRight"
+                android:id="@+id/panel_rot_right"
+                android:onClick="btnButtonPress"
                 android:gravity="center"
                 android:orientation="vertical"
                 android:padding="20dp"
@@ -120,13 +120,13 @@
                 android:layout_height="fill_parent">
 
                 <ImageView
-                    android:id="@+id/arrow_NS_rotate_right"
+                    android:id="@+id/btnRotRight"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
                     android:background="@drawable/arrow_rotate_right"/>
 
                 <TextView
-                    android:id="@+id/lbl_ns_rotate_right"
+                    android:id="@+id/lblRotRight"
                     android:visibility="visible"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -140,8 +140,8 @@
             android:gravity="center">
 
             <LinearLayout
-                android:id="@+id/ns_left"
-                android:onClick="onBtnDroneLeft"
+                android:id="@+id/panel_left"
+                android:onClick="btnButtonPress"
                 android:gravity="center"
                 android:orientation="vertical"
                 android:padding="20dp"
@@ -149,13 +149,13 @@
                 android:layout_height="fill_parent">
 
                 <ImageView
-                    android:id="@+id/arrow_NS_left"
+                    android:id="@+id/btnLeft"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
                     android:background="@drawable/arrow_left"/>
 
                 <TextView
-                    android:id="@+id/lbl_NS_left"
+                    android:id="@+id/lblLeft"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Move left"
@@ -169,20 +169,11 @@
                 android:layout_height="fill_parent"
                 android:gravity="center">
 
-                <Button
-                    android:id="@+id/btnAction"
-                    android:text="Connect Solo"
-                    android:textSize="30sp"
-                    android:onClick="onBtnAction"
-                    android:layout_width="180dp"
-                    android:layout_height="180dp"
-                    android:background="@drawable/rounded_button_conn"/>
-
             </RelativeLayout>
 
             <LinearLayout
-                android:id="@+id/ns_right"
-                android:onClick="onBtnDroneRight"
+                android:id="@+id/panel_right"
+                android:onClick="btnButtonPress"
                 android:gravity="center"
                 android:orientation="vertical"
                 android:padding="20dp"
@@ -190,13 +181,13 @@
                 android:layout_height="fill_parent">
 
                 <ImageView
-                    android:id="@+id/arrow_NS_right"
+                    android:id="@+id/btnRight"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
                     android:background="@drawable/arrow_right"/>
 
                 <TextView
-                    android:id="@+id/lbl_NS_right"
+                    android:id="@+id/lblRight"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Move right"
@@ -210,8 +201,8 @@
             android:gravity="center">
 
             <LinearLayout
-                android:id="@+id/ns_decrease_alt"
-                android:onClick="onBtnDroneDecreaseAlt"
+                android:id="@+id/panel_alt_dec"
+                android:onClick="btnButtonPress"
                 android:gravity="center"
                 android:orientation="vertical"
                 android:padding="20dp"
@@ -219,13 +210,13 @@
                 android:layout_height="fill_parent">
 
                 <ImageView
-                    android:id="@+id/arrow_NS_decrease_alt"
+                    android:id="@+id/btnAltDec"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
                     android:background="@drawable/arrow_alt_dec"/>
 
                 <TextView
-                    android:id="@+id/lbl_NS_decrease_alt"
+                    android:id="@+id/lblAltDec"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Decrease altitude"
@@ -234,8 +225,8 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/ns_down"
-                android:onClick="onBtnDroneBackward"
+                android:id="@+id/panel_down"
+                android:onClick="btnButtonPress"
                 android:gravity="center"
                 android:orientation="vertical"
                 android:padding="20dp"
@@ -243,13 +234,13 @@
                 android:layout_height="fill_parent">
 
                 <ImageView
-                    android:id="@+id/arrow_NS_down"
+                    android:id="@+id/btnDown"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
                     android:background="@drawable/arrow_backward"/>
 
                 <TextView
-                    android:id="@+id/lbl_NS_down"
+                    android:id="@+id/lblDown"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Move backwards"
@@ -258,8 +249,8 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/ns_increase_alt"
-                android:onClick="onBtnDroneIncreaseAlt"
+                android:id="@+id/panel_alt_inc"
+                android:onClick="btnButtonPress"
                 android:gravity="center"
                 android:orientation="vertical"
                 android:padding="20dp"
@@ -267,13 +258,13 @@
                 android:layout_height="fill_parent">
 
                 <ImageView
-                    android:id="@+id/arrow_NS_increase_alt"
+                    android:id="@+id/btnAltInc"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
                     android:background="@drawable/arrow_alt_inc"/>
 
                 <TextView
-                    android:id="@+id/lbl_NS_increase_alt"
+                    android:id="@+id/lblAltInc"
                     android:visibility="visible"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
