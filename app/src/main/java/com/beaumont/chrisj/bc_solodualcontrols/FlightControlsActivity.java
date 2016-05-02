@@ -11,6 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -18,10 +20,17 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class FlightControlsActivity extends AppCompatActivity {
+public class FlightControlsActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener{
 
     BluetoothDevice bluetoothDevice;
     BluetoothChatService mChatService;
+
+    boolean controls_directional;
+    boolean controls_rotation;
+    boolean controls_altitude;
+
+    boolean display_arrows;
+    boolean display_text;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +77,6 @@ public class FlightControlsActivity extends AppCompatActivity {
                         break;
                     case Constants.MESSAGE_READ:
                         byte[] readBuf = (byte[]) msg.obj;
-                        // construct a string from the valid bytes in the buffer
                         String readMessage = new String(readBuf, 0, msg.arg1);
                         makeToast(readMessage);
                         break;
@@ -102,6 +110,18 @@ public class FlightControlsActivity extends AppCompatActivity {
 
         final AlertDialog alert = alertDialog.create();
         alert.show();
+
+        final CheckBox chkDirectional = (CheckBox) alert.findViewById(R.id.chkDirectional);
+        final CheckBox chkRotation = (CheckBox) alert.findViewById(R.id.chkRotation);
+        final CheckBox chkAltitude = (CheckBox) alert.findViewById(R.id.chkAltitude);
+
+        chkDirectional.setOnCheckedChangeListener(this);
+        chkRotation.setOnCheckedChangeListener(this);
+        chkAltitude.setOnCheckedChangeListener(this);
+
+        chkDirectional.setChecked(controls_directional);
+        chkRotation.setChecked(controls_rotation);
+        chkAltitude.setChecked(controls_altitude);
     }
 
     @Override
@@ -117,28 +137,28 @@ public class FlightControlsActivity extends AppCompatActivity {
 
         switch (btnID){
             case(R.id.panel_up):
-                sendBT("Up");
+                sendBT("101");
                 break;
             case(R.id.panel_rot_right):
-                sendBT("Rot Right");
+                sendBT("201");
                 break;
             case(R.id.panel_right):
-                sendBT("Right");
+                sendBT("102");
                 break;
             case(R.id.panel_alt_inc):
-                sendBT("Alt Inc");
+                sendBT("301");
                 break;
             case(R.id.panel_down):
-                sendBT("Down");
+                sendBT("103");
                 break;
             case(R.id.panel_alt_dec):
-                sendBT("Alt Dec");
+                sendBT("302");
                 break;
             case(R.id.panel_left):
-                sendBT("Left");
+                sendBT("104");
                 break;
             case(R.id.panel_rot_left):
-                sendBT("Rot Left");
+                sendBT("202");
                 break;
         }
     }
@@ -147,11 +167,75 @@ public class FlightControlsActivity extends AppCompatActivity {
         mChatService.write(msg.getBytes());
     }
 
+    @Override
+    public void onCheckedChanged(CompoundButton chkView, boolean isChecked) {
+        switch(chkView.getId()){
+            case R.id.chkDirectional:
+                controls_directional = isChecked;
+                break;
+            case R.id.chkRotation:
+                controls_rotation = isChecked;
+                break;
+            case R.id.chkAltitude:
+                controls_altitude = isChecked;
+                break;
+            case R.id.chkArrows:
+                display_arrows = isChecked;
+                break;
+            case R.id.chkText:
+                display_text = isChecked;
+                break;
+
+        }
+
+        updateControls();
+
+    }
+
+    private void updateControls(){
+        int directional_visible, rotation_visible, altitude_visible;
+
+        if(controls_directional)
+            directional_visible = ImageView.VISIBLE;
+        else
+            directional_visible = ImageView.GONE;
+
+        if(controls_rotation)
+            rotation_visible = ImageView.VISIBLE;
+        else
+            rotation_visible = ImageView.GONE;
+
+        if(controls_altitude)
+            altitude_visible = ImageView.VISIBLE;
+        else
+            altitude_visible = ImageView.GONE;
+
+
+        btnUp.setVisibility(directional_visible);
+        btnRight.setVisibility(directional_visible);
+        btnDown.setVisibility(directional_visible);
+        btnLeft.setVisibility(directional_visible);
+
+        btnRotRight.setVisibility(rotation_visible);
+        btnRotLeft.setVisibility(rotation_visible);
+
+        btnAltInc.setVisibility(altitude_visible);
+        btnAltDec.setVisibility(altitude_visible);
+    }
+
     private void makeToast(String m){
         Toast.makeText(getApplicationContext(), m, Toast.LENGTH_SHORT).show();
     }
 
     private void initVars(){
+
+        controls_directional = true;
+        controls_rotation = true;
+        controls_altitude = true;
+
+        display_arrows = true;
+        display_text = false;
+
         frame_connect = (RelativeLayout)findViewById(R.id.frame_connect);
         frame_controls = (TableLayout)findViewById(R.id.frame_controls);
 
@@ -176,8 +260,6 @@ public class FlightControlsActivity extends AppCompatActivity {
         lblLeft = (TextView)findViewById(R.id.lblLeft);
         lblRotLeft = (TextView)findViewById(R.id.lblRotLeft);
     }
-
-
 
 
     RelativeLayout frame_connect;

@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center">
+    android:gravity="center"
+    tools:context="com.beaumont.chrisj.bc_solodualcontrols.FlightControlsActivity">
 
     <LinearLayout
         android:id="@+id/linear_layout"
@@ -17,21 +19,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Directional controls"
-            android:checked="false"
+            android:checked="true"
             android:id="@+id/chkDirectional" />
 
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Rotation controls"
-            android:checked="false"
+            android:checked="true"
             android:id="@+id/chkRotation" />
 
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Altitude controls"
-            android:checked="false"
+            android:checked="true"
             android:id="@+id/chkAltitude" />
 
         <Space
@@ -43,15 +45,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Display arrows"
-            android:checked="false"
-            android:id="@+id/chkArrows" />
+            android:checked="true"
+            android:id="@+id/chkArrows"
+            android:visibility="gone"/>
 
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Display descriptive text"
             android:checked="false"
-            android:id="@+id/chkText" />
+            android:id="@+id/chkText"
+            android:visibility="gone"/>
 
     </LinearLayout>
 

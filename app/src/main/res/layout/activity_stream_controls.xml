@@ -9,13 +9,109 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.beaumont.chrisj.bc_solodualcontrols.StreamControlsActivity">
 
-    <TextView
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/frame_stream_controls"
+        android:gravity="center"
+        android:layout_toRightOf="@+id/frame_launch_controls"
+        android:layout_toEndOf="@+id/frame_launch_controls">
+
+        <Button android:id="@+id/btnLoadStream"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:text="Load Stream"
+            android:onClick="onBtnLoadStream"
+            android:visibility="invisible"/>
+
+        <Space
+            android:layout_width="@dimen/activity_horizontal_margin"
+            android:layout_height="match_parent" />
+
+        <Button android:id="@+id/btnLookUp"
+            android:onClick="onBtnLookUp"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:text="Look up"
+            android:visibility="invisible"/>
+
+        <Space
+            android:layout_width="@dimen/activity_horizontal_margin"
+            android:layout_height="match_parent" />
+
+        <Button android:id="@+id/btnLookDown"
+            android:onClick="onBtnLookDown"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:text="Look down"
+            android:visibility="invisible" />
+
+        <Space
+            android:layout_width="@dimen/activity_horizontal_margin"
+            android:layout_height="match_parent" />
+
+        <Button android:id="@+id/btnTakePhoto"
+            android:onClick="onBtnPhoto"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:text="Take photo"
+            android:visibility="invisible"/>
+
+        <Space
+            android:layout_width="@dimen/activity_horizontal_margin"
+            android:layout_height="match_parent" />
+
+        <Button android:id="@+id/btnToggleRecording"
+            android:onClick="onBtnRecord"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:text="Record"
+            android:visibility="invisible" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_above="@+id/frame_stream_controls"
+        android:id="@+id/frame_launch_controls">
+
+        <Button
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:text="Connect"
+            android:id="@+id/btnConn"
+            android:onClick="onBtnConn"
+            android:background="@drawable/rounded_button_conn"/>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/activity_vertical_margin" />
+
+        <Button
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:text="Arm"
+            android:id="@+id/btnLaunch"
+            android:onClick="onBtnLaunch"
+            android:background="@drawable/rounded_button_arm"/>
+
+    </LinearLayout>
+
+    <TextureView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Stream controls"
-        android:id="@+id/textView10"
+        android:id="@+id/frame_stream"
         android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignRight="@+id/frame_stream_controls"
+        android:layout_alignEnd="@+id/frame_stream_controls"
+        android:layout_alignBottom="@+id/frame_launch_controls"
+        android:layout_toEndOf="@+id/frame_launch_controls"
+        android:layout_toRightOf="@+id/frame_launch_controls"
+        android:layout_margin="@dimen/activity_vertical_margin"/>
 </RelativeLayout>

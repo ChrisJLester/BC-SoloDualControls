@@ -8,7 +8,7 @@
     <RelativeLayout android:id="@+id/frame_connect"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <TextView
             android:layout_width="wrap_content"
@@ -53,7 +53,7 @@
     </RelativeLayout>
 
     <TableLayout android:id="@+id/frame_controls"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:stretchColumns="*">
@@ -74,12 +74,13 @@
                 <ImageView
                     android:id="@+id/btnRotLeft"
                     android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:background="@drawable/arrow_rotate_left"/>
+                    android:layout_height="match_parent"
+                    android:src="@drawable/arrow_rotate_left"
+                    android:scaleType="fitCenter"/>
 
                 <TextView
                     android:id="@+id/lblRotLeft"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Rotate anti-clockwise"
@@ -98,12 +99,13 @@
                 <ImageView
                     android:id="@+id/btnUp"
                     android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:background="@drawable/arrow_forward"/>
+                    android:layout_height="match_parent"
+                    android:src="@drawable/arrow_forward"
+                    android:scaleType="fitCenter"/>
 
                 <TextView
                     android:id="@+id/lblUp"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Move forwards"
@@ -122,12 +124,13 @@
                 <ImageView
                     android:id="@+id/btnRotRight"
                     android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:background="@drawable/arrow_rotate_right"/>
+                    android:layout_height="match_parent"
+                    android:src="@drawable/arrow_rotate_right"
+                    android:scaleType="fitCenter"/>
 
                 <TextView
                     android:id="@+id/lblRotRight"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Rotate clockwise"
@@ -151,15 +154,16 @@
                 <ImageView
                     android:id="@+id/btnLeft"
                     android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:background="@drawable/arrow_left"/>
+                    android:layout_height="match_parent"
+                    android:src="@drawable/arrow_left"
+                    android:scaleType="fitCenter"/>
 
                 <TextView
                     android:id="@+id/lblLeft"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Move left"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     android:textSize="30sp"/>
             </LinearLayout>
 
@@ -183,15 +187,16 @@
                 <ImageView
                     android:id="@+id/btnRight"
                     android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:background="@drawable/arrow_right"/>
+                    android:layout_height="match_parent"
+                    android:src="@drawable/arrow_right"
+                    android:scaleType="fitCenter"/>
 
                 <TextView
                     android:id="@+id/lblRight"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Move right"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     android:textSize="30sp" />
             </LinearLayout>
         </TableRow>
@@ -212,15 +217,16 @@
                 <ImageView
                     android:id="@+id/btnAltDec"
                     android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:background="@drawable/arrow_alt_dec"/>
+                    android:layout_height="match_parent"
+                    android:src="@drawable/arrow_alt_dec"
+                    android:scaleType="fitCenter"/>
 
                 <TextView
                     android:id="@+id/lblAltDec"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Decrease altitude"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     android:textSize="30sp" />
             </LinearLayout>
 
@@ -236,15 +242,16 @@
                 <ImageView
                     android:id="@+id/btnDown"
                     android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:background="@drawable/arrow_backward"/>
+                    android:layout_height="match_parent"
+                    android:src="@drawable/arrow_backward"
+                    android:scaleType="fitCenter"/>
 
                 <TextView
                     android:id="@+id/lblDown"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Move backwards"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     android:textSize="30sp" />
             </LinearLayout>
 
@@ -260,12 +267,13 @@
                 <ImageView
                     android:id="@+id/btnAltInc"
                     android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:background="@drawable/arrow_alt_inc"/>
+                    android:layout_height="match_parent"
+                    android:src="@drawable/arrow_alt_inc"
+                    android:scaleType="fitCenter"/>
 
                 <TextView
                     android:id="@+id/lblAltInc"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Increase altitude"
