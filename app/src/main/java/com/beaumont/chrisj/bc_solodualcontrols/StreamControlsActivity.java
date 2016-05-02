@@ -116,12 +116,13 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
                 makeToast("Drone Connected");
                 updateConnectedButton(this.drone.isConnected());
                 updateLaunchButton();
-                updateStreamControls();
+                updateStreamControls(Button.VISIBLE);
                 break;
             case AttributeEvent.STATE_DISCONNECTED:
                 makeToast("Drone Disconnected");
                 updateConnectedButton(this.drone.isConnected());
                 updateLaunchButton();
+                updateStreamControls(Button.INVISIBLE);
                 break;
             case AttributeEvent.STATE_UPDATED:
             case AttributeEvent.STATE_ARMING:
@@ -301,7 +302,7 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
         State vehicleState = this.drone.getAttribute(AttributeType.STATE);
 
         if (!this.drone.isConnected()) {
-            btnLaunch.setVisibility(View.INVISIBLE);
+            btnLaunch.setVisibility(View.GONE);
         } else {
             btnLaunch.setVisibility(View.VISIBLE);
         }
@@ -501,8 +502,7 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
                     makeToast("Couldn't move (Timeout)");
                 }
             });
-        } else
-            makeToast("You're not flying!");
+        }
     }
 
     private void read_executionError(String msg, int error){
@@ -657,18 +657,18 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
         Toast.makeText(getApplicationContext(), m, Toast.LENGTH_SHORT).show();
     }
 
-    private void updateStreamControls(){
+    private void updateStreamControls(int vis){
         Button btnLoadStream = (Button) findViewById(R.id.btnLoadStream);
         Button btnLookUp = (Button) findViewById(R.id.btnLookUp);
         Button btnLookDown = (Button) findViewById(R.id.btnLookDown);
         Button btnTakePhoto = (Button) findViewById(R.id.btnTakePhoto);
         Button btnToggleRecord = (Button) findViewById(R.id.btnToggleRecording);
 
-        btnLoadStream.setVisibility(Button.VISIBLE);
-        btnLookUp.setVisibility(Button.VISIBLE);
-        btnLookDown.setVisibility(Button.VISIBLE);
-        btnTakePhoto.setVisibility(Button.VISIBLE);
-        btnToggleRecord.setVisibility(Button.VISIBLE);
+        btnLoadStream.setVisibility(vis);
+        btnLookUp.setVisibility(vis);
+        btnLookDown.setVisibility(vis);
+        btnTakePhoto.setVisibility(vis);
+        btnToggleRecord.setVisibility(vis);
     }
 
 
