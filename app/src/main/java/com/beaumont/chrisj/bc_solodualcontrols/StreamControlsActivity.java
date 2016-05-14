@@ -391,8 +391,6 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
 
         target_yaw = current_yaw + MOVEMENT_DEG;
         target_yaw = (target_yaw >= 360 ? (target_yaw - 360) : target_yaw);
-
-        if(isFlying) {
             ControlApi.getApi(this.drone).turnTo((float)target_yaw, TURN_SPD, false, new AbstractCommandListener() {
                 @Override
                 public void onSuccess() {}
@@ -406,8 +404,6 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
                 }
 
             });
-        } else
-            makeToast("You're not flying!");
     }
 
     private void rotateLeft(){
@@ -419,7 +415,6 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
         target_yaw = current_yaw - MOVEMENT_DEG;
         target_yaw = (target_yaw < 0 ? (target_yaw + 360) : target_yaw);
 
-        if(isFlying) {
             ControlApi.getApi(this.drone).turnTo((float) target_yaw, -TURN_SPD, false, new AbstractCommandListener() {
                 @Override
                 public void onSuccess() {
@@ -436,25 +431,18 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
                 }
 
             });
-        } else
-            makeToast("You're not flying!");
     }
 
     private void altitudeInc(){
         yaw_before_action = drone_yaw;
 
-        if(isFlying) {
             Altitude alt = this.drone.getAttribute(AttributeType.ALTITUDE);
             ControlApi.getApi(this.drone).climbTo(alt.getAltitude() + MOVEMENT_ALT);
             check_yaw();
-        } else
-            makeToast("You're not flying!");
     }
 
     private void altitudeDec(){
         yaw_before_action = drone_yaw;
-
-        if(isFlying) {
             Altitude alt = this.drone.getAttribute(AttributeType.ALTITUDE);
             double target_alt = alt.getAltitude() - MOVEMENT_ALT;
 
@@ -464,12 +452,9 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
                 ControlApi.getApi(this.drone).climbTo(alt.getAltitude() - MOVEMENT_ALT);
                 check_yaw();
             }
-        } else
-            makeToast("You're not flying!");
     }
 
     private void moveDrone(double bearing){
-        if(isFlying) {
             yaw_before_action = drone_yaw;
 
             double target_bearing = bearing + drone_yaw;
@@ -502,7 +487,6 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
                     makeToast("Couldn't move (Timeout)");
                 }
             });
-        }
     }
 
     private void read_executionError(String msg, int error){
