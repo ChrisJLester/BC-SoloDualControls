@@ -1,7 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ListView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/list_bt_devices"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="#000">
-</ListView>
+    android:layout_height="fill_parent">
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:id="@+id/space2" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignRight="@+id/space2"
+        android:layout_alignEnd="@+id/space2"
+        android:padding="@dimen/activity_vertical_margin"
+        android:id="@+id/relativeLayout"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/activity_vertical_margin"
+            android:text="On both devices Bluetooth needs to be enabled. Check if bluetooth is enabled in the devices status bar or by using the button below."
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/activity_vertical_margin"
+            android:text="Devices to be used have to be paired before using this application. This can be achieved through the Bluetooth settings."/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/activity_vertical_margin"
+            android:text="Once paired the other device will appear in the list on the right. Select it to continue."/>
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/list_bt_devices"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000"
+        android:layout_toEndOf="@+id/space2"
+        android:layout_toRightOf="@+id/space2">
+
+
+    </ListView>
+
+</RelativeLayout>

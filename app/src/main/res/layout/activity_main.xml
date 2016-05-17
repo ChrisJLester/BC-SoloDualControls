@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:grid="http://schemas.android.com/apk/res-auto"
     tools:context="com.beaumont.chrisj.bc_solodualcontrols.MainActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -26,86 +25,208 @@
 
     </LinearLayout>
 
-    <GridLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:columnCount="3"
-        android:rowCount="1">
-
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            grid:layout_columnWeight="1"
-            grid:layout_rowWeight="1"
-            grid:layout_gravity="fill"
-            android:gravity="center">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/tablet"/>
-
-        </RelativeLayout>
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical"
-            grid:layout_columnWeight="1"
-            grid:layout_rowWeight="1"
-            grid:layout_gravity="fill"
-            android:gravity="center">
-
-            <TextView
-                android:id="@+id/lblLaunchControls"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/activity_vertical_margin"
-                android:padding="@dimen/activity_vertical_margin"
-                android:background="@drawable/circle"
-                android:text="Launch Controls"/>
+            android:gravity="center"
+            android:id="@+id/linearLayout"
+            android:layout_centerHorizontal="true"
+            android:layout_above="@+id/linearLayout2">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/activity_vertical_margin"
                 android:layout_margin="@dimen/activity_vertical_margin"
+                android:padding="@dimen/activity_vertical_margin"
+                android:text="Launch controls"
                 android:background="@drawable/circle"
-                android:text="Stream Controls"/>
+                android:id="@+id/lblLaunchCons" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/activity_vertical_margin"
                 android:layout_margin="@dimen/activity_vertical_margin"
+                android:padding="@dimen/activity_vertical_margin"
+                android:text="Stream controls"
                 android:background="@drawable/circle"
-                android:text="Flight Controls"/>
+                android:id="@+id/lblStreamCons" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/activity_vertical_margin"
                 android:layout_margin="@dimen/activity_vertical_margin"
+                android:padding="@dimen/activity_vertical_margin"
+                android:text="Flight controls"
                 android:background="@drawable/circle"
-                android:text="Land/Stop Controls"/>
+                android:id="@+id/lblFlightCons" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/activity_vertical_margin"
+                android:padding="@dimen/activity_vertical_margin"
+                android:text="Land/Stop controls"
+                android:background="@drawable/circle"
+                android:id="@+id/lblLandCons" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:id="@+id/linearLayout2"
+            android:layout_toRightOf="@+id/frame_stream"
+            android:layout_alignRight="@+id/linearLayout"
+            android:layout_alignEnd="@+id/linearLayout"
+            android:padding="@dimen/activity_vertical_margin">
+
+            <Button android:id="@+id/btnRestart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"
+                android:onClick="onBtnRestart"
+                android:text="Restart"/>
+
+            <Button android:id="@+id/btnStart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"
+                android:text="Start"/>
 
         </LinearLayout>
 
         <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            grid:layout_columnWeight="1"
-            grid:layout_rowWeight="1"
-            grid:layout_gravity="fill"
-            android:gravity="center">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@+id/linearLayout"
+            android:layout_toStartOf="@id/linearLayout"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:id="@+id/frame_stream">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/tablet"/>
+                android:layout_marginTop="@dimen/activity_horizontal_margin"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/tablet"
+                android:id="@+id/imageView" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/imageView"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:orientation="vertical"
+                android:gravity="center_horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/activity_vertical_margin"
+                    android:text="Launch Controls"
+                    android:id="@+id/lc_1"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/activity_vertical_margin"
+                    android:text="Stream Controls"
+                    android:id="@+id/sc_1"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/activity_vertical_margin"
+                    android:text="Flight Controls"
+                    android:id="@+id/fc_1"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/activity_vertical_margin"
+                    android:text="Land/Stop Controls"
+                    android:id="@+id/lsc_1"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
 
         </RelativeLayout>
 
-    </GridLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@+id/linearLayout"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:id="@+id/frame_flight">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/activity_horizontal_margin"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/tablet"
+                android:id="@+id/imageView2" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:layout_below="@+id/imageView2">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/activity_vertical_margin"
+                    android:text="Launch Controls"
+                    android:id="@+id/lc_2"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/activity_vertical_margin"
+                    android:text="Stream Controls"
+                    android:id="@+id/sc_2"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/activity_vertical_margin"
+                    android:text="Flight Controls"
+                    android:id="@+id/fc_2"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/activity_vertical_margin"
+                    android:text="Land/Stop Controls"
+                    android:id="@+id/lsc_2"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+    </RelativeLayout>
 
 </LinearLayout>
