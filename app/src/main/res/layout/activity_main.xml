@@ -12,10 +12,10 @@
         android:orientation="vertical"
         android:gravity="center">
 
-        <TextView
+        <TextView android:id="@+id/lblOtherDevice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Connected to: "
+            android:text="Other device: "
             android:padding="@dimen/activity_vertical_margin"/>
 
         <TextView
@@ -93,13 +93,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="invisible"
-                android:onClick="onBtnRestart"
-                android:text="Restart"/>
+                android:onClick="onBtnReset"
+                android:text="Reset"/>
 
             <Button android:id="@+id/btnStart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="invisible"
+                android:onClick="onBtnStart"
                 android:text="Start"/>
 
         </LinearLayout>
@@ -163,6 +164,15 @@
 
             </LinearLayout>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="This device"
+                android:id="@+id/textView"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true" />
+
 
         </RelativeLayout>
 
@@ -223,6 +233,15 @@
                     android:visibility="gone" />
 
             </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Other Device"
+                android:id="@+id/textView2"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true" />
 
 
         </RelativeLayout>
