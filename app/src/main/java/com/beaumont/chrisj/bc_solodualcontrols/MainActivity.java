@@ -34,18 +34,14 @@ public class MainActivity extends AppCompatActivity {
     BluetoothAdapter mBluetoothAdapter;
     BluetoothDevice mDevice;
     BluetoothChatService mChatService;
-
     private final static int REQUEST_ENABLE_BT = 1;
 
     boolean[] deviceA = {false, false, false, false};
     boolean[] deviceB = {false, false, false, false};
 
-    String msg;
     int dragged_lbl;
-
     String last_msg = "";
-
-    Boolean flag;
+    Boolean frame_flag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +75,8 @@ public class MainActivity extends AppCompatActivity {
         enable_DD();
     }
 
+    //Setup
+    //==============================================================================================
     private void showBT_devices(){
         final ArrayAdapter mArrayAdapter = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_list_item_1);
         final Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
@@ -155,6 +153,35 @@ public class MainActivity extends AppCompatActivity {
         mChatService.connect(mDevice, true);
     }
 
+    private void enable_DD(){
+        findViewById(R.id.lblLaunchCons).setOnDragListener(new mOnDragListener());
+        findViewById(R.id.lblLaunchCons).setOnTouchListener(new mOnTouchListener());
+
+        findViewById(R.id.lblStreamCons).setOnDragListener(new mOnDragListener());
+        findViewById(R.id.lblStreamCons).setOnTouchListener(new mOnTouchListener());
+
+        findViewById(R.id.lblFlightCons).setOnDragListener(new mOnDragListener());
+        findViewById(R.id.lblFlightCons).setOnTouchListener(new mOnTouchListener());
+
+        findViewById(R.id.lblLandCons).setOnDragListener(new mOnDragListener());
+        findViewById(R.id.lblLandCons).setOnTouchListener(new mOnTouchListener());
+
+        findViewById(R.id.frame_stream).setOnDragListener(new mOnDragListener());
+        findViewById(R.id.frame_flight).setOnDragListener(new mOnDragListener());
+    }
+
+
+    //Bluetooth stuff
+    //==============================================================================================
+    private void sendBT(String s){
+        //Since multiple onDragListeners are running, got to make sure you don't send the same message multiple times
+        if(!s.equals(last_msg)){
+            last_msg = s;
+            mChatService.write(s.getBytes());
+            makeToast(s);
+        }
+    }
+
     private void parseMsg(String s){
         int code = Integer.parseInt(s);
 
@@ -162,134 +189,132 @@ public class MainActivity extends AppCompatActivity {
             case (999):
                 reset();
                 break;
+            case (998):
+                findViewById(R.id.btnStart).setVisibility(Button.VISIBLE);
             case (101):
                 findViewById(R.id.lblLaunchCons).setVisibility(TextView.INVISIBLE);
                 findViewById(R.id.lc_2).setVisibility(TextView.VISIBLE);
+                deviceB[0] = true;
                 break;
             case (102):
                 findViewById(R.id.lblStreamCons).setVisibility(TextView.INVISIBLE);
                 findViewById(R.id.lblFlightCons).setVisibility(TextView.INVISIBLE);
                 findViewById(R.id.sc_2).setVisibility(TextView.VISIBLE);
                 findViewById(R.id.fc_1).setVisibility(TextView.VISIBLE);
+                deviceB[1] = true;
+                deviceA[2] = true;
                 break;
             case (103):
                 findViewById(R.id.lblFlightCons).setVisibility(TextView.INVISIBLE);
                 findViewById(R.id.lblStreamCons).setVisibility(TextView.INVISIBLE);
                 findViewById(R.id.fc_2).setVisibility(TextView.VISIBLE);
                 findViewById(R.id.sc_1).setVisibility(TextView.VISIBLE);
+                deviceB[2] = true;
+                deviceA[1] = true;
                 break;
             case (104):
                 findViewById(R.id.lblLandCons).setVisibility(TextView.INVISIBLE);
                 findViewById(R.id.lsc_2).setVisibility(TextView.VISIBLE);
+                deviceB[3] = true;
                 break;
 
             case (201):
                 findViewById(R.id.lblLaunchCons).setVisibility(TextView.INVISIBLE);
                 findViewById(R.id.lc_1).setVisibility(TextView.VISIBLE);
+                deviceA[0] = true;
                 break;
             case (202):
                 findViewById(R.id.lblStreamCons).setVisibility(TextView.INVISIBLE);
                 findViewById(R.id.lblFlightCons).setVisibility(TextView.INVISIBLE);
                 findViewById(R.id.sc_1).setVisibility(TextView.VISIBLE);
                 findViewById(R.id.fc_2).setVisibility(TextView.VISIBLE);
+                deviceA[1] = true;
+                deviceB[2] = true;
                 break;
             case (203):
                 findViewById(R.id.lblFlightCons).setVisibility(TextView.INVISIBLE);
                 findViewById(R.id.lblStreamCons).setVisibility(TextView.INVISIBLE);
                 findViewById(R.id.fc_1).setVisibility(TextView.VISIBLE);
                 findViewById(R.id.sc_2).setVisibility(TextView.VISIBLE);
+                deviceA[2] = true;
+                deviceB[1] = true;
                 break;
             case (204):
                 findViewById(R.id.lblLandCons).setVisibility(TextView.INVISIBLE);
                 findViewById(R.id.lsc_1).setVisibility(TextView.VISIBLE);
+                deviceA[3] = true;
                 break;
             default:
                 break;
         }
 
         Button btnReset = (Button) findViewById(R.id.btnRestart);
-        if((code < 999) && (btnReset.getVisibility() == Button.INVISIBLE))
+        if((code < 998) && (btnReset.getVisibility() == Button.INVISIBLE))
             btnReset.setVisibility(Button.VISIBLE);
     }
 
-    public void flight_controls(View view){
-        Intent intent = new Intent (this, FlightControlsActivity.class);
-        intent.putExtra("btdevice", mDevice);
-        startActivity(intent);
+
+    //Button actions
+    //==============================================================================================
+    public void onBtnReset(View v){
+        sendBT("999");
+        reset();
     }
 
-    public void stream_controls(View view){
-        Intent intent = new Intent (this, StreamControlsActivity.class);
-        intent.putExtra("btdevice", mDevice);
-        startActivity(intent);
-    }
+    private void reset(){
+        findViewById(R.id.btnRestart).setVisibility(Button.INVISIBLE);
+        findViewById(R.id.btnStart).setVisibility(Button.INVISIBLE);
 
-    private void enable_DD(){
-        TextView lblLaunchCons = (TextView) findViewById(R.id.lblLaunchCons);
-        TextView lblStreamCons = (TextView) findViewById(R.id.lblStreamCons);
-        TextView lblFlightCons = (TextView) findViewById(R.id.lblFlightCons);
-        TextView lblLandCons = (TextView) findViewById(R.id.lblLandCons);
+        findViewById(R.id.lblLaunchCons).setVisibility(TextView.VISIBLE);
+        findViewById(R.id.lblFlightCons).setVisibility(TextView.VISIBLE);
+        findViewById(R.id.lblStreamCons).setVisibility(TextView.VISIBLE);
+        findViewById(R.id.lblLandCons).setVisibility(TextView.VISIBLE);
 
-        lblLaunchCons.setOnDragListener(new mOnDragListener(R.id.lblLaunchCons));
-        lblLaunchCons.setOnTouchListener(new mOnTouchListener());
+        findViewById(R.id.lc_1).setVisibility(TextView.GONE);
+        findViewById(R.id.fc_1).setVisibility(TextView.GONE);
+        findViewById(R.id.sc_1).setVisibility(TextView.GONE);
+        findViewById(R.id.lsc_1).setVisibility(TextView.GONE);
 
-        lblStreamCons.setOnDragListener(new mOnDragListener(R.id.lblStreamCons));
-        lblStreamCons.setOnTouchListener(new mOnTouchListener());
+        findViewById(R.id.lc_2).setVisibility(TextView.GONE);
+        findViewById(R.id.fc_2).setVisibility(TextView.GONE);
+        findViewById(R.id.sc_2).setVisibility(TextView.GONE);
+        findViewById(R.id.lsc_2).setVisibility(TextView.GONE);
 
-        lblFlightCons.setOnDragListener(new mOnDragListener(R.id.lblFlightCons));
-        lblFlightCons.setOnTouchListener(new mOnTouchListener());
-
-        lblLandCons.setOnDragListener(new mOnDragListener(R.id.lblLandCons));
-        lblLandCons.setOnTouchListener(new mOnTouchListener());
-
-        RelativeLayout frame_stream = (RelativeLayout) findViewById(R.id.frame_stream);
-        RelativeLayout frame_flight = (RelativeLayout) findViewById(R.id.frame_flight);
-
-        frame_stream.setOnDragListener(new mOnDragListener(R.id.frame_stream));
-        frame_flight.setOnDragListener(new mOnDragListener(R.id.frame_flight));
-    }
-
-    public class mOnDragListener implements View.OnDragListener{
-
-        int lbl_id;
-
-        public mOnDragListener(int i){
-            lbl_id = i;
+        for(int i = 0; i < 4; i++) {
+            deviceA[i] = false;
+            deviceB[i] = false;
         }
+    }
+
+    public void onBtnStart(View v){
+        mChatService.stop();
+    }
+
+
+    //Classes for enabling drag and drop
+    //==============================================================================================
+    public class mOnDragListener implements View.OnDragListener{
 
         @Override
         public boolean onDrag(View v, DragEvent event) {
             switch (event.getAction()) {
-                case DragEvent.ACTION_DRAG_STARTED:
-                    Log.d(msg, "Action is DragEvent.ACTION_DRAG_STARTED");
-                    break;
                 case DragEvent.ACTION_DRAG_ENTERED:
-                    Log.d(msg, "Action is DragEvent.ACTION_DRAG_ENTERED");
-
                     if (v.getId() == R.id.frame_flight) {
                         v.setBackgroundColor(Color.BLUE);
-                        flag = true;
+                        frame_flag = true;
                     } else if (v.getId() == R.id.frame_stream) {
                         v.setBackgroundColor(Color.BLUE);
-                        flag = false;
+                        frame_flag = false;
                     }
                     break;
                 case DragEvent.ACTION_DRAG_EXITED:
-                        Log.d(msg, "Action is DragEvent.ACTION_DRAG_EXITED");
-                        if (v.getId() == R.id.frame_flight || v.getId() == R.id.frame_stream)
-                            v.setBackgroundColor(Color.TRANSPARENT);
-                    break;
-                case DragEvent.ACTION_DRAG_LOCATION:
-                    Log.d(msg, "Action is DragEvent.ACTION_DRAG_LOCATION");
+                    if (v.getId() == R.id.frame_flight || v.getId() == R.id.frame_stream)
+                        v.setBackgroundColor(Color.TRANSPARENT);
                     break;
                 case DragEvent.ACTION_DRAG_ENDED:
-                    Log.d(msg, "Action is DragEvent.ACTION_DRAG_ENDED");
                     findViewById(R.id.frame_flight).setBackgroundColor(Color.TRANSPARENT);
                     findViewById(R.id.frame_stream).setBackgroundColor(Color.TRANSPARENT);
                     moveToList();
-                    break;
-                case DragEvent.ACTION_DROP:
-                    Log.d(msg, "ACTION_DROP event");
                     break;
                 default:
                     break;
@@ -317,12 +342,27 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    //Other stuff
+    //==============================================================================================
+    public void flight_controls(View view){
+        Intent intent = new Intent (this, FlightControlsActivity.class);
+        intent.putExtra("btdevice", mDevice);
+        startActivity(intent);
+    }
+
+    public void stream_controls(View view){
+        Intent intent = new Intent (this, StreamControlsActivity.class);
+        intent.putExtra("btdevice", mDevice);
+        startActivity(intent);
+    }
+
     private void moveToList(){
         Button btnRestart = (Button)findViewById(R.id.btnRestart);
         if(btnRestart.getVisibility() == Button.INVISIBLE)
             btnRestart.setVisibility(Button.VISIBLE);
 
-        if(!flag){
+        if(!frame_flag){
             switch (dragged_lbl){
                 case R.id.lblLaunchCons:
                     findViewById(R.id.lc_1).setVisibility(TextView.VISIBLE);
@@ -392,51 +432,9 @@ public class MainActivity extends AppCompatActivity {
                 findViewById(R.id.lblLandCons).getVisibility() == TextView.INVISIBLE){
 
             findViewById(R.id.btnStart).setVisibility(Button.VISIBLE);
+            sendBT("998");
         }
 
-    }
-
-    public void onBtnReset(View v){
-        sendBT("999");
-        reset();
-    }
-
-    private void reset(){
-        findViewById(R.id.btnRestart).setVisibility(Button.INVISIBLE);
-        findViewById(R.id.btnStart).setVisibility(Button.INVISIBLE);
-
-        findViewById(R.id.lblLaunchCons).setVisibility(TextView.VISIBLE);
-        findViewById(R.id.lblFlightCons).setVisibility(TextView.VISIBLE);
-        findViewById(R.id.lblStreamCons).setVisibility(TextView.VISIBLE);
-        findViewById(R.id.lblLandCons).setVisibility(TextView.VISIBLE);
-
-        findViewById(R.id.lc_1).setVisibility(TextView.GONE);
-        findViewById(R.id.fc_1).setVisibility(TextView.GONE);
-        findViewById(R.id.sc_1).setVisibility(TextView.GONE);
-        findViewById(R.id.lsc_1).setVisibility(TextView.GONE);
-
-        findViewById(R.id.lc_2).setVisibility(TextView.GONE);
-        findViewById(R.id.fc_2).setVisibility(TextView.GONE);
-        findViewById(R.id.sc_2).setVisibility(TextView.GONE);
-        findViewById(R.id.lsc_2).setVisibility(TextView.GONE);
-
-        for(int i = 0; i < 4; i++) {
-            deviceA[i] = false;
-            deviceB[i] = false;
-        }
-    }
-
-    public void onBtnStart(View v){
-
-    }
-
-    private void sendBT(String s){
-        //Since multiple onDragListeners are running, got to make sure you don't send the same message multiple times
-        if(!s.equals(last_msg)){
-            last_msg = s;
-            mChatService.write(s.getBytes());
-            makeToast(s);
-        }
     }
 
     private void makeToast(String m){
