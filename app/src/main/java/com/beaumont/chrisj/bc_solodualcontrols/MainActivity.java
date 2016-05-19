@@ -43,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
     String msg;
     int dragged_lbl;
 
+    String last_msg = "";
+
     Boolean flag;
 
     @Override
@@ -228,87 +230,72 @@ public class MainActivity extends AppCompatActivity {
         TextView lblFlightCons = (TextView) findViewById(R.id.lblFlightCons);
         TextView lblLandCons = (TextView) findViewById(R.id.lblLandCons);
 
-        lblLaunchCons.setOnDragListener(new mOnDragListener());
+        lblLaunchCons.setOnDragListener(new mOnDragListener(R.id.lblLaunchCons));
         lblLaunchCons.setOnTouchListener(new mOnTouchListener());
 
-        lblStreamCons.setOnDragListener(new mOnDragListener());
+        lblStreamCons.setOnDragListener(new mOnDragListener(R.id.lblStreamCons));
         lblStreamCons.setOnTouchListener(new mOnTouchListener());
 
-        lblFlightCons.setOnDragListener(new mOnDragListener());
+        lblFlightCons.setOnDragListener(new mOnDragListener(R.id.lblFlightCons));
         lblFlightCons.setOnTouchListener(new mOnTouchListener());
 
-        lblLandCons.setOnDragListener(new mOnDragListener());
+        lblLandCons.setOnDragListener(new mOnDragListener(R.id.lblLandCons));
         lblLandCons.setOnTouchListener(new mOnTouchListener());
 
         RelativeLayout frame_stream = (RelativeLayout) findViewById(R.id.frame_stream);
         RelativeLayout frame_flight = (RelativeLayout) findViewById(R.id.frame_flight);
-        frame_stream.setOnDragListener(new mOnDragListener());
-        frame_flight.setOnDragListener(new mOnDragListener());
+
+        frame_stream.setOnDragListener(new mOnDragListener(R.id.frame_stream));
+        frame_flight.setOnDragListener(new mOnDragListener(R.id.frame_flight));
     }
 
     public class mOnDragListener implements View.OnDragListener{
 
+        int lbl_id;
+
+        public mOnDragListener(int i){
+            lbl_id = i;
+        }
+
         @Override
         public boolean onDrag(View v, DragEvent event) {
+            switch (event.getAction()) {
+                case DragEvent.ACTION_DRAG_STARTED:
+                    Log.d(msg, "Action is DragEvent.ACTION_DRAG_STARTED");
+                    break;
+                case DragEvent.ACTION_DRAG_ENTERED:
+                    Log.d(msg, "Action is DragEvent.ACTION_DRAG_ENTERED");
 
-            boolean result = false;
-
-            switch (dragged_lbl){
-                case R.id.lblLaunchCons:
-                    result = parseDragEvent(v, event);
+                    if (v.getId() == R.id.frame_flight) {
+                        v.setBackgroundColor(Color.BLUE);
+                        flag = true;
+                    } else if (v.getId() == R.id.frame_stream) {
+                        v.setBackgroundColor(Color.BLUE);
+                        flag = false;
+                    }
                     break;
-                case R.id.lblStreamCons:
-                    result = parseDragEvent(v, event);
+                case DragEvent.ACTION_DRAG_EXITED:
+                        Log.d(msg, "Action is DragEvent.ACTION_DRAG_EXITED");
+                        if (v.getId() == R.id.frame_flight || v.getId() == R.id.frame_stream)
+                            v.setBackgroundColor(Color.TRANSPARENT);
                     break;
-                case R.id.lblFlightCons:
-                    result = parseDragEvent(v, event);
+                case DragEvent.ACTION_DRAG_LOCATION:
+                    Log.d(msg, "Action is DragEvent.ACTION_DRAG_LOCATION");
                     break;
-                case R.id.lblLandCons:
-                    result = parseDragEvent(v, event);
+                case DragEvent.ACTION_DRAG_ENDED:
+                    Log.d(msg, "Action is DragEvent.ACTION_DRAG_ENDED");
+                    findViewById(R.id.frame_flight).setBackgroundColor(Color.TRANSPARENT);
+                    findViewById(R.id.frame_stream).setBackgroundColor(Color.TRANSPARENT);
+                    moveToList();
+                    break;
+                case DragEvent.ACTION_DROP:
+                    Log.d(msg, "ACTION_DROP event");
+                    break;
+                default:
+                    break;
             }
-
-            return result;
+            return true;
         }
-    }
-
-    private boolean parseDragEvent(View v, DragEvent event){
-        switch (event.getAction()) {
-            case DragEvent.ACTION_DRAG_STARTED:
-                Log.d(msg, "Action is DragEvent.ACTION_DRAG_STARTED");
-                break;
-            case DragEvent.ACTION_DRAG_ENTERED:
-                Log.d(msg, "Action is DragEvent.ACTION_DRAG_ENTERED");
-
-                if(v.getId() == R.id.frame_flight){
-                    v.setBackgroundColor(Color.BLUE);
-                    flag = true;
-                } else if (v.getId() == R.id.frame_stream){
-                    v.setBackgroundColor(Color.BLUE);
-                    flag = false;
-                }
-                break;
-            case DragEvent.ACTION_DRAG_EXITED:
-                Log.d(msg, "Action is DragEvent.ACTION_DRAG_EXITED");
-                if(v.getId() == R.id.frame_flight || v.getId() == R.id.frame_stream)
-                    v.setBackgroundColor(Color.TRANSPARENT);
-                break;
-            case DragEvent.ACTION_DRAG_LOCATION:
-                Log.d(msg, "Action is DragEvent.ACTION_DRAG_LOCATION");
-                break;
-            case DragEvent.ACTION_DRAG_ENDED:
-                Log.d(msg, "Action is DragEvent.ACTION_DRAG_ENDED");
-                findViewById(R.id.frame_flight).setBackgroundColor(Color.TRANSPARENT);
-                findViewById(R.id.frame_stream).setBackgroundColor(Color.TRANSPARENT);
-                moveToList();
-                makeToast("Ended");
-                break;
-            case DragEvent.ACTION_DROP:
-                Log.d(msg, "ACTION_DROP event");
-                break;
-            default:
-                break;
-        }
-        return true;
     }
 
     public class mOnTouchListener implements View.OnTouchListener{
@@ -443,8 +430,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void sendBT(String msg){
-        mChatService.write(msg.getBytes());
+    private void sendBT(String s){
+        //Since multiple onDragListeners are running, got to make sure you don't send the same message multiple times
+        if(!s.equals(last_msg)){
+            last_msg = s;
+            mChatService.write(s.getBytes());
+            makeToast(s);
+        }
     }
 
     private void makeToast(String m){
