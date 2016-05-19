@@ -32,6 +32,8 @@ public class FlightControlsActivity extends AppCompatActivity implements Compoun
     boolean display_arrows;
     boolean display_text;
 
+    boolean[] controls_list;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,11 +44,27 @@ public class FlightControlsActivity extends AppCompatActivity implements Compoun
 
         if(getIntent().getExtras() != null){
             bluetoothDevice = getIntent().getExtras().getParcelable("btdevice");
+            controls_list = getIntent().getExtras().getBooleanArray("controls_lst");
             initChatService();
+        }
+
+        if(controls_list != null){
+            if(!controls_list[0]) {
+                findViewById(R.id.frame_flight_takeoff).setVisibility(RelativeLayout.GONE);
+                findViewById(R.id.frame_controls).setVisibility(TableLayout.VISIBLE);
+            }
         }
 
         initVars();
     }
+
+
+    //Launch Controls
+    //==============================================================================================
+    public void onBtnLaunchAction(View v){
+        makeToast("Flight Controls");
+    }
+
 
     private void initChatService(){
         mChatService = new BluetoothChatService(getApplicationContext(), new Handler(){
@@ -64,12 +82,10 @@ public class FlightControlsActivity extends AppCompatActivity implements Compoun
                                 break;
                             case Constants.STATE_CONNECTING:
                                 break;
-                            case Constants.STATE_LISTEN:
-                                progressBar.setVisibility(ProgressBar.INVISIBLE);
-                                textWarning.setVisibility(TextView.VISIBLE);
-                                break;
                             case Constants.STATE_NONE:
                                 makeToast("State: None");
+                                break;
+                            default:
                                 break;
                         }
                         break;
@@ -87,13 +103,6 @@ public class FlightControlsActivity extends AppCompatActivity implements Compoun
                 }
             }
         });
-    }
-
-    public void btnConnect(View view){
-        progressBar.setVisibility(ProgressBar.VISIBLE);
-        textWarning.setVisibility(TextView.INVISIBLE);
-
-        mChatService.connect(bluetoothDevice, true);
     }
 
     private void displayOptions(){
@@ -236,11 +245,7 @@ public class FlightControlsActivity extends AppCompatActivity implements Compoun
         display_arrows = true;
         display_text = false;
 
-        frame_connect = (RelativeLayout)findViewById(R.id.frame_connect);
         frame_controls = (TableLayout)findViewById(R.id.frame_controls);
-
-        progressBar = (ProgressBar)findViewById(R.id.loading_spinner);
-        textWarning = (TextView)findViewById(R.id.textWarning);
 
         btnUp = (ImageView)findViewById(R.id.btnUp);
         btnRotRight = (ImageView)findViewById(R.id.btnRotRight);
@@ -264,9 +269,6 @@ public class FlightControlsActivity extends AppCompatActivity implements Compoun
 
     RelativeLayout frame_connect;
     TableLayout frame_controls;
-
-    ProgressBar progressBar;
-    TextView textWarning;
 
     ImageView btnUp;
     ImageView btnRotRight;

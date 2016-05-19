@@ -37,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
     private final static int REQUEST_ENABLE_BT = 1;
 
     boolean[] deviceA = {false, false, false, false};
-    boolean[] deviceB = {false, false, false, false};
 
     int dragged_lbl;
     String last_msg = "";
@@ -191,17 +190,19 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case (998):
                 findViewById(R.id.btnStart).setVisibility(Button.VISIBLE);
+                break;
+            case (997):
+                start();
+                break;
             case (101):
                 findViewById(R.id.lblLaunchCons).setVisibility(TextView.INVISIBLE);
                 findViewById(R.id.lc_2).setVisibility(TextView.VISIBLE);
-                deviceB[0] = true;
                 break;
             case (102):
                 findViewById(R.id.lblStreamCons).setVisibility(TextView.INVISIBLE);
                 findViewById(R.id.lblFlightCons).setVisibility(TextView.INVISIBLE);
                 findViewById(R.id.sc_2).setVisibility(TextView.VISIBLE);
                 findViewById(R.id.fc_1).setVisibility(TextView.VISIBLE);
-                deviceB[1] = true;
                 deviceA[2] = true;
                 break;
             case (103):
@@ -209,13 +210,11 @@ public class MainActivity extends AppCompatActivity {
                 findViewById(R.id.lblStreamCons).setVisibility(TextView.INVISIBLE);
                 findViewById(R.id.fc_2).setVisibility(TextView.VISIBLE);
                 findViewById(R.id.sc_1).setVisibility(TextView.VISIBLE);
-                deviceB[2] = true;
                 deviceA[1] = true;
                 break;
             case (104):
                 findViewById(R.id.lblLandCons).setVisibility(TextView.INVISIBLE);
                 findViewById(R.id.lsc_2).setVisibility(TextView.VISIBLE);
-                deviceB[3] = true;
                 break;
 
             case (201):
@@ -229,7 +228,6 @@ public class MainActivity extends AppCompatActivity {
                 findViewById(R.id.sc_1).setVisibility(TextView.VISIBLE);
                 findViewById(R.id.fc_2).setVisibility(TextView.VISIBLE);
                 deviceA[1] = true;
-                deviceB[2] = true;
                 break;
             case (203):
                 findViewById(R.id.lblFlightCons).setVisibility(TextView.INVISIBLE);
@@ -237,7 +235,6 @@ public class MainActivity extends AppCompatActivity {
                 findViewById(R.id.fc_1).setVisibility(TextView.VISIBLE);
                 findViewById(R.id.sc_2).setVisibility(TextView.VISIBLE);
                 deviceA[2] = true;
-                deviceB[1] = true;
                 break;
             case (204):
                 findViewById(R.id.lblLandCons).setVisibility(TextView.INVISIBLE);
@@ -249,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         Button btnReset = (Button) findViewById(R.id.btnRestart);
-        if((code < 998) && (btnReset.getVisibility() == Button.INVISIBLE))
+        if((code < 997) && (btnReset.getVisibility() == Button.INVISIBLE))
             btnReset.setVisibility(Button.VISIBLE);
     }
 
@@ -280,18 +277,31 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.sc_2).setVisibility(TextView.GONE);
         findViewById(R.id.lsc_2).setVisibility(TextView.GONE);
 
-        for(int i = 0; i < 4; i++) {
+        for(int i = 0; i < 4; i++)
             deviceA[i] = false;
-            deviceB[i] = false;
-        }
     }
 
     public void onBtnStart(View v){
-        mChatService.stop();
+        sendBT("997");
+        start();
+    }
+
+    private void start(){
+        Intent intent;
+
+        if(deviceA[1])
+            intent = new Intent (this, StreamControlsActivity.class);
+        else
+            intent = new Intent (this, FlightControlsActivity.class);
+
+        intent.putExtra("btdevice", mDevice);
+        intent.putExtra("controls_lst", deviceA);
+        startActivity(intent);
     }
 
 
     //Classes for enabling drag and drop
+
     //==============================================================================================
     public class mOnDragListener implements View.OnDragListener{
 
@@ -345,18 +355,6 @@ public class MainActivity extends AppCompatActivity {
 
     //Other stuff
     //==============================================================================================
-    public void flight_controls(View view){
-        Intent intent = new Intent (this, FlightControlsActivity.class);
-        intent.putExtra("btdevice", mDevice);
-        startActivity(intent);
-    }
-
-    public void stream_controls(View view){
-        Intent intent = new Intent (this, StreamControlsActivity.class);
-        intent.putExtra("btdevice", mDevice);
-        startActivity(intent);
-    }
-
     private void moveToList(){
         Button btnRestart = (Button)findViewById(R.id.btnRestart);
         if(btnRestart.getVisibility() == Button.INVISIBLE)
@@ -374,7 +372,6 @@ public class MainActivity extends AppCompatActivity {
                     findViewById(R.id.fc_2).setVisibility(TextView.VISIBLE);
                     findViewById(R.id.lblFlightCons).setVisibility(TextView.INVISIBLE);
                     deviceA[1] = true;
-                    deviceB[2] = true;
                     sendBT("102");
                     break;
                 case R.id.lblFlightCons:
@@ -382,7 +379,6 @@ public class MainActivity extends AppCompatActivity {
                     findViewById(R.id.sc_2).setVisibility(TextView.VISIBLE);
                     findViewById(R.id.lblStreamCons).setVisibility(TextView.INVISIBLE);
                     deviceA[2] = true;
-                    deviceB[1] = true;
                     sendBT("103");
                     break;
                 case R.id.lblLandCons:
@@ -397,14 +393,12 @@ public class MainActivity extends AppCompatActivity {
             switch (dragged_lbl){
                 case R.id.lblLaunchCons:
                     findViewById(R.id.lc_2).setVisibility(TextView.VISIBLE);
-                    deviceB[0] = true;
                     sendBT("201");
                     break;
                 case R.id.lblStreamCons:
                     findViewById(R.id.sc_2).setVisibility(TextView.VISIBLE);
                     findViewById(R.id.fc_1).setVisibility(TextView.VISIBLE);
                     findViewById(R.id.lblFlightCons).setVisibility(TextView.INVISIBLE);
-                    deviceB[1] = true;
                     deviceA[2] = true;
                     sendBT("202");
                     break;
@@ -412,13 +406,11 @@ public class MainActivity extends AppCompatActivity {
                     findViewById(R.id.fc_2).setVisibility(TextView.VISIBLE);
                     findViewById(R.id.sc_1).setVisibility(TextView.VISIBLE);
                     findViewById(R.id.lblStreamCons).setVisibility(TextView.INVISIBLE);
-                    deviceB[2] = true;
                     deviceA[1] = true;
                     sendBT("203");
                     break;
                 case R.id.lblLandCons:
                     findViewById(R.id.lsc_2).setVisibility(TextView.VISIBLE);
-                    deviceB[3] = true;
                     sendBT("204");
                     break;
                 default:

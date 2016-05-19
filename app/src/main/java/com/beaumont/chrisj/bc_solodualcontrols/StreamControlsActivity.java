@@ -13,6 +13,7 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.o3dr.android.client.ControlTower;
@@ -68,7 +69,9 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
     public orientationListener ol;
 
     Button btnConn, btnLaunch, btnLoadStream;
-    TextureView frame_stream;
+    TextureView stream;
+
+    boolean[] controls_list;
 
     @Override
     public void onStart() {
@@ -172,8 +175,8 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
         btnConn = (Button) findViewById(R.id.btnConn);
         btnLaunch = (Button) findViewById(R.id.btnLaunch);
         btnLoadStream = (Button) findViewById(R.id.btnLoadStream);
-        frame_stream = (TextureView) findViewById(R.id.frame_stream);
-        frame_stream.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
+        stream = (TextureView) findViewById(R.id.stream);
+        stream.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
             @Override
             public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
             }
@@ -195,6 +198,17 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
         });
         stream_loaded = false;
         ol = new orientationListener();
+
+        if(getIntent().getExtras() != null){
+            controls_list = getIntent().getExtras().getBooleanArray("controls_lst");
+        }
+
+        if(controls_list != null) {
+            if (!controls_list[0]) {
+                findViewById(R.id.frame_stream_takeoff).setVisibility(RelativeLayout.GONE);
+                findViewById(R.id.frame_stream).setVisibility(RelativeLayout.VISIBLE);
+            }
+        }
     }
 
     private void initBT(){
@@ -321,6 +335,12 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
 
     private void force_Guided_mode(){
         VehicleApi.getApi(this.drone).setVehicleMode(VehicleMode.COPTER_GUIDED);
+    }
+
+    //Launch Controls
+    //==============================================================================================
+    public void onBtnLaunchAction(View v){
+        makeToast("Stream Controls");
     }
 
 
@@ -542,9 +562,9 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
         if(stream_loaded){
             stopVideoStream();
         } else {
-            if(frame_stream.isAvailable()){
+            if(stream.isAvailable()){
                 makeToast("Stream available");
-                startVideoStream(new Surface(frame_stream.getSurfaceTexture()));
+                startVideoStream(new Surface(stream.getSurfaceTexture()));
             } else {
                 makeToast("Stream not available");
             }

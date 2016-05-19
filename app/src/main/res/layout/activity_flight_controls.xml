@@ -5,51 +5,12 @@
     android:layout_height="match_parent"
     tools:context="com.beaumont.chrisj.bc_solodualcontrols.FlightControlsActivity">
 
-    <RelativeLayout android:id="@+id/frame_connect"
+
+    <RelativeLayout android:id="@+id/frame_flight_takeoff"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="visible">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Try connecting below!"
-            android:id="@+id/textView9"
-            android:layout_above="@+id/textWarning"
-            android:layout_centerHorizontal="true" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Connect"
-            android:id="@+id/btnConnect"
-            android:onClick="btnConnect"
-            android:layout_below="@+id/textWarning"
-            android:layout_centerHorizontal="true" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/activity_vertical_margin"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Failed to Connect: Make sure stream controls is running on the paired device."
-            android:id="@+id/textWarning"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"
-            android:visibility="invisible"/>
-
-        <ProgressBar
-            android:id="@+id/loading_spinner"
-            android:visibility="invisible"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:layout_below="@+id/btnConnect"
-            android:layout_centerHorizontal="true"
-            android:padding="@dimen/activity_vertical_margin"/>
-
-
+        <include layout="@layout/frame_takeoff"/>
     </RelativeLayout>
 
     <TableLayout android:id="@+id/frame_controls"
