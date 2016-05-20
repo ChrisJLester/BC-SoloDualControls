@@ -84,7 +84,6 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
         super.onStop();
         if (this.drone.isConnected()) {
             this.drone.disconnect();
-            updateConnectedButton(false);
         }
         this.controlTower.unregisterDrone(this.drone);
         this.controlTower.disconnect();
@@ -114,22 +113,29 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
 
     @Override
     public void onDroneEvent(String event, Bundle extras) {
+        State droneState;
         switch (event) {
             case AttributeEvent.STATE_CONNECTED:
                 makeToast("Drone Connected");
-                updateConnectedButton(this.drone.isConnected());
-                updateLaunchButton();
-                updateStreamControls(Button.VISIBLE);
+                droneState = this.drone.getAttribute(AttributeType.STATE);
+                if (droneState.isFlying()) {
+                    findViewById(R.id.frame_stream_takeoff).setVisibility(RelativeLayout.GONE);
+                    findViewById(R.id.frame_stream).setVisibility(RelativeLayout.VISIBLE);
+                }
+                findViewById(R.id.btnArm).setVisibility(Button.VISIBLE);
                 break;
             case AttributeEvent.STATE_DISCONNECTED:
                 makeToast("Drone Disconnected");
-                updateConnectedButton(this.drone.isConnected());
-                updateLaunchButton();
-                updateStreamControls(Button.INVISIBLE);
+                findViewById(R.id.btnArm).setVisibility(Button.INVISIBLE);
+                findViewById(R.id.btnTakeOff).setVisibility(Button.INVISIBLE);
                 break;
             case AttributeEvent.STATE_UPDATED:
             case AttributeEvent.STATE_ARMING:
-                updateLaunchButton();
+                droneState = this.drone.getAttribute(AttributeType.STATE);
+                if(this.drone.isConnected() && droneState.isArmed())
+                    findViewById(R.id.btnTakeOff).setVisibility(Button.VISIBLE);
+                else
+                    findViewById(R.id.btnTakeOff).setVisibility(Button.INVISIBLE);
                 break;
             case AttributeEvent.TYPE_UPDATED:
                 Type newDroneType = this.drone.getAttribute(AttributeType.TYPE);
@@ -172,9 +178,6 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
         });
         alert.show();
 
-        btnConn = (Button) findViewById(R.id.btnConn);
-        btnLaunch = (Button) findViewById(R.id.btnLaunch);
-        btnLoadStream = (Button) findViewById(R.id.btnLoadStream);
         stream = (TextureView) findViewById(R.id.stream);
         stream.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
             @Override
@@ -219,16 +222,16 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
                     case Constants.MESSAGE_STATE_CHANGE:
                         switch (msg.arg1) {
                             case Constants.STATE_CONNECTED:
-                                makeToast("State: Connected");
+                                //makeToast("State: Connected");
                                 break;
                             case Constants.STATE_CONNECTING:
-                                makeToast("State: Connecting");
+                                //makeToast("State: Connecting");
                                 break;
                             case Constants.STATE_LISTEN:
-                                makeToast("State: Listening");
+                                //makeToast("State: Listening");
                                 break;
                             case Constants.STATE_NONE:
-                                makeToast("State: None");
+                                //makeToast("State: None");
                                 break;
                         }
                         break;
@@ -257,10 +260,20 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
 
     //Launch controls actions
     //=========================================================================
-    public void onBtnConn(View view) {
-        if(this.drone.isConnected()) {
-            this.drone.disconnect();
-        } else {
+    public void onBtnConn(View v){
+        conn();
+    }
+
+    public void onBtnArm(View v){
+        arm();
+    }
+
+    public void onBtnTakeOff(View v){
+        takeoff();
+    }
+
+    private void conn(){
+        if(!this.drone.isConnected()) {
             if(!towerConn)
                 makeToast("Make sure 3DR Services app is running, or restart this app");
             else{
@@ -270,77 +283,45 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
                 ConnectionParameter connectionParams = new ConnectionParameter(ConnectionType.TYPE_UDP, extraParams, null);
                 this.drone.connect(connectionParams);
             }
+        } else {
+            makeToast("Already Connected!");
         }
     }
 
-    public void onBtnLaunch(View view) {
+    private void arm(){
         State vehicleState = this.drone.getAttribute(AttributeType.STATE);
+        if (vehicleState.isConnected() && !vehicleState.isArmed()){
+            VehicleApi.getApi(this.drone).arm(true);
+        } else if (vehicleState.isArmed())
+            makeToast("Already Armed!");
+    }
 
-        if (vehicleState.isFlying()) {
-            // Land
-            VehicleApi.getApi(this.drone).setVehicleMode(VehicleMode.COPTER_RTL);
-        } else if (vehicleState.isArmed()) {
-            // Take off
+    private void takeoff(){
+        State vehicleState = this.drone.getAttribute(AttributeType.STATE);
+        if(vehicleState.isConnected() && vehicleState.isArmed() && !vehicleState.isFlying()){
             ControlApi.getApi(this.drone).takeoff(15, new AbstractCommandListener() {
                 @Override
-                public void onSuccess() {}
+                public void onSuccess() {
+
+                }
 
                 @Override
                 public void onError(int executionError) {
-                    makeToast("Failed to takeoff (Error)");
+                    makeToast("Failed");
                 }
 
                 @Override
                 public void onTimeout() {
-                    makeToast("Failed to takeoff (Timeout)");
+                    makeToast("Timeout");
                 }
             });
-        } else if (!vehicleState.isConnected()) {
-            // Connect
-            makeToast("Connect to a drone first");
-        } else if (vehicleState.isConnected() && !vehicleState.isArmed()){
-            // Connected but not Armed
-            VehicleApi.getApi(this.drone).arm(true);
         }
     }
 
-    private void updateConnectedButton(Boolean conn) {
-        if (conn) {
-            btnConn.setText("Disconnect");
-        } else {
-            btnConn.setText("Connect");
-        }
-    }
 
-    protected void updateLaunchButton() {
-        State vehicleState = this.drone.getAttribute(AttributeType.STATE);
-
-        if (!this.drone.isConnected()) {
-            btnLaunch.setVisibility(View.GONE);
-        } else {
-            btnLaunch.setVisibility(View.VISIBLE);
-        }
-
-        isFlying = vehicleState.isFlying();
-
-        if (vehicleState.isFlying()) {
-            btnLaunch.setText("Land");
-        } else if (vehicleState.isArmed()) {
-            btnLaunch.setText("Take off");
-        } else if (vehicleState.isConnected()){
-            btnLaunch.setText("Arm");
-            force_Guided_mode();
-        }
-    }
 
     private void force_Guided_mode(){
         VehicleApi.getApi(this.drone).setVehicleMode(VehicleMode.COPTER_GUIDED);
-    }
-
-    //Launch Controls
-    //==============================================================================================
-    public void onBtnLaunchAction(View v){
-        makeToast("Stream Controls");
     }
 
 
@@ -435,17 +416,17 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
         target_yaw = current_yaw - MOVEMENT_DEG;
         target_yaw = (target_yaw < 0 ? (target_yaw + 360) : target_yaw);
 
-            ControlApi.getApi(this.drone).turnTo((float) target_yaw, -TURN_SPD, false, new AbstractCommandListener() {
-                @Override
-                public void onSuccess() {
-                }
+        ControlApi.getApi(this.drone).turnTo((float) target_yaw, -TURN_SPD, false, new AbstractCommandListener() {
+            @Override
+            public void onSuccess() {
+            }
 
-                @Override
-                public void onError(int executionError) {
-                    read_executionError("Failed to rotate", executionError);
-                }
+            @Override
+            public void onError(int executionError) {
+                read_executionError("Failed to rotate", executionError);
+            }
 
-                @Override
+            @Override
                 public void onTimeout() {
                     makeToast("Failed to rotate (timeout)");
                 }
@@ -522,7 +503,7 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
             makeToast(msg + ": Error didn't match");
     }
 
-    private void check_yaw(){
+    private void check_yaw() {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
@@ -571,7 +552,7 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
         }
     }
 
-    public void onBtnPhoto(View view){
+    public void onBtnPhoto(View view) {
         SoloCameraApi.getApi(this.drone).takePhoto(new AbstractCommandListener() {
             @Override
             public void onSuccess() {
@@ -590,7 +571,7 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
         });
     }
 
-    public void onBtnRecord(View view){
+    public void onBtnRecord(View view) {
         SoloCameraApi.getApi(drone).toggleVideoRecording(new AbstractCommandListener() {
             @Override
             public void onSuccess() {
@@ -660,22 +641,6 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
     private void makeToast(String m){
         Toast.makeText(getApplicationContext(), m, Toast.LENGTH_SHORT).show();
     }
-
-    private void updateStreamControls(int vis){
-        Button btnLoadStream = (Button) findViewById(R.id.btnLoadStream);
-        Button btnLookUp = (Button) findViewById(R.id.btnLookUp);
-        Button btnLookDown = (Button) findViewById(R.id.btnLookDown);
-        Button btnTakePhoto = (Button) findViewById(R.id.btnTakePhoto);
-        Button btnToggleRecord = (Button) findViewById(R.id.btnToggleRecording);
-
-        btnLoadStream.setVisibility(vis);
-        btnLookUp.setVisibility(vis);
-        btnLookDown.setVisibility(vis);
-        btnTakePhoto.setVisibility(vis);
-        btnToggleRecord.setVisibility(vis);
-    }
-
-
 
     public class orientationListener implements GimbalApi.GimbalOrientationListener{
         @Override

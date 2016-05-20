@@ -17,7 +17,7 @@
             android:adjustViewBounds="true"
             android:id="@+id/imageView3" />
 
-        <Button
+        <Button android:id="@+id/btnConn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/imageView3"
@@ -29,7 +29,7 @@
             android:background="@drawable/rounded_button_conn"
             android:text="Connect"
             android:textSize="60sp"
-            android:onClick="onBtnLaunchAction" />
+            android:onClick="onBtnConn" />
 
     </RelativeLayout>
 
@@ -47,7 +47,8 @@
             android:adjustViewBounds="true"
             android:id="@+id/imageView4" />
 
-        <Button
+        <Button android:id="@+id/btnArm"
+            android:visibility="invisible"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/imageView4"
@@ -58,7 +59,8 @@
             android:layout_alignParentStart="true"
             android:background="@drawable/rounded_button_arm"
             android:text="Arm"
-            android:textSize="60sp"/>
+            android:textSize="60sp"
+            android:onClick="onBtnArm"/>
 
     </RelativeLayout>
 
@@ -76,7 +78,8 @@
             android:adjustViewBounds="true"
             android:id="@+id/imageView5" />
 
-        <Button
+        <Button android:id="@+id/btnTakeOff"
+            android:visibility="invisible"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/imageView5"
@@ -87,7 +90,8 @@
             android:layout_alignParentStart="true"
             android:background="@drawable/rounded_button_takeoff"
             android:text="Take Off"
-            android:textSize="60sp"/>
+            android:textSize="60sp"
+            android:onClick="onBtnTakeOff"/>
 
     </RelativeLayout>
 
