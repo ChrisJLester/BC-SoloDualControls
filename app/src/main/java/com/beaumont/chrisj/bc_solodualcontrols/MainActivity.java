@@ -149,6 +149,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        mChatService.start();
         mChatService.connect(mDevice, true);
     }
 

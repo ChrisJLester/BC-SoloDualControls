@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -22,7 +23,7 @@ import android.widget.Toast;
 
 public class FlightControlsActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener{
 
-    BluetoothDevice bluetoothDevice;
+    BluetoothDevice mDevice;
     BluetoothChatService mChatService;
 
     boolean controls_directional;
@@ -43,7 +44,7 @@ public class FlightControlsActivity extends AppCompatActivity implements Compoun
         wifiManager.setWifiEnabled(false);
 
         if(getIntent().getExtras() != null){
-            bluetoothDevice = getIntent().getExtras().getParcelable("btdevice");
+            mDevice = getIntent().getExtras().getParcelable("btdevice");
             controls_list = getIntent().getExtras().getBooleanArray("controls_lst");
             initChatService();
         }
@@ -55,15 +56,82 @@ public class FlightControlsActivity extends AppCompatActivity implements Compoun
             }
         }
 
+        initBT();
         initVars();
+    }
+
+    private void initBT(){
+        mChatService = new BluetoothChatService(getApplicationContext(), new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                switch (msg.what) {
+                    case Constants.MESSAGE_WRITE:
+                        byte[] writeBuf = (byte[]) msg.obj;
+                        // construct a string from the buffer
+                        String writeMessage = new String(writeBuf);
+                        makeToast("Write: " + writeMessage);
+                        break;
+                    case Constants.MESSAGE_READ:
+                        byte[] readBuf = (byte[]) msg.obj;
+                        // construct a string from the valid bytes in the buffer
+                        String readMessage = new String(readBuf, 0, msg.arg1);
+                        parseMsg(readMessage);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+        mChatService.start();
+        mChatService.connect(mDevice, true);
     }
 
 
     //Launch Controls
     //==============================================================================================
-    public void onBtnLaunchAction(View v){
-        makeToast("Flight Controls");
+    public void onBtnConn(View v){
+        sendBT("101");
     }
+
+    public void onBtnArm(View v){
+        sendBT("102");
+    }
+
+    public void onBtnTakeOff(View v){
+        sendBT("103");
+    }
+
+    private void parseMsg(String msg){
+        int code = Integer.parseInt(msg);
+
+        switch (code){
+            case(101):
+                //Already Flying
+                findViewById(R.id.frame_flight_takeoff).setVisibility(RelativeLayout.GONE);
+                findViewById(R.id.frame_controls).setVisibility(RelativeLayout.VISIBLE);
+                break;
+            case(102):
+                //Connected
+                findViewById(R.id.btnArm).setVisibility(Button.VISIBLE);
+                break;
+            case(103):
+                //Disconnected
+                findViewById(R.id.btnArm).setVisibility(Button.INVISIBLE);
+                findViewById(R.id.btnTakeOff).setVisibility(Button.INVISIBLE);
+                break;
+            case(104):
+                //Armed
+                findViewById(R.id.btnTakeOff).setVisibility(Button.VISIBLE);
+                break;
+            case(105):
+                //Disarmed
+                findViewById(R.id.btnTakeOff).setVisibility(Button.INVISIBLE);
+                break;
+        }
+    }
+
+
+
 
 
     private void initChatService(){
@@ -146,28 +214,28 @@ public class FlightControlsActivity extends AppCompatActivity implements Compoun
 
         switch (btnID){
             case(R.id.panel_up):
-                sendBT("101");
-                break;
-            case(R.id.panel_rot_right):
                 sendBT("201");
                 break;
-            case(R.id.panel_right):
-                sendBT("102");
-                break;
-            case(R.id.panel_alt_inc):
+            case(R.id.panel_rot_right):
                 sendBT("301");
                 break;
+            case(R.id.panel_right):
+                sendBT("202");
+                break;
+            case(R.id.panel_alt_inc):
+                sendBT("401");
+                break;
             case(R.id.panel_down):
-                sendBT("103");
+                sendBT("203");
                 break;
             case(R.id.panel_alt_dec):
-                sendBT("302");
+                sendBT("402");
                 break;
             case(R.id.panel_left):
-                sendBT("104");
+                sendBT("204");
                 break;
             case(R.id.panel_rot_left):
-                sendBT("202");
+                sendBT("302");
                 break;
         }
     }

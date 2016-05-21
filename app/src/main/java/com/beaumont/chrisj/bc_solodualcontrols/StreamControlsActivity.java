@@ -1,6 +1,7 @@
 package com.beaumont.chrisj.bc_solodualcontrols;
 
 import android.app.AlertDialog;
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.SurfaceTexture;
@@ -43,6 +44,7 @@ import com.o3dr.services.android.lib.util.MathUtils;
 
 public class StreamControlsActivity extends AppCompatActivity implements TowerListener, DroneListener {
 
+    BluetoothDevice mDevice;
     BluetoothChatService mChatService;
 
     //Drone Variables
@@ -118,24 +120,44 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
             case AttributeEvent.STATE_CONNECTED:
                 makeToast("Drone Connected");
                 droneState = this.drone.getAttribute(AttributeType.STATE);
-                if (droneState.isFlying()) {
-                    findViewById(R.id.frame_stream_takeoff).setVisibility(RelativeLayout.GONE);
-                    findViewById(R.id.frame_stream).setVisibility(RelativeLayout.VISIBLE);
+
+                if(!controls_list[0]){
+                    if(droneState.isFlying()){
+                        sendBT("101");
+                    } else
+                        sendBT("102");
+                } else {
+                    if (droneState.isFlying()) {
+                        findViewById(R.id.frame_stream_takeoff).setVisibility(RelativeLayout.GONE);
+                        findViewById(R.id.frame_stream).setVisibility(RelativeLayout.VISIBLE);
+                    } else
+                        findViewById(R.id.btnArm).setVisibility(Button.VISIBLE);
                 }
-                findViewById(R.id.btnArm).setVisibility(Button.VISIBLE);
                 break;
             case AttributeEvent.STATE_DISCONNECTED:
                 makeToast("Drone Disconnected");
-                findViewById(R.id.btnArm).setVisibility(Button.INVISIBLE);
-                findViewById(R.id.btnTakeOff).setVisibility(Button.INVISIBLE);
+                if(!controls_list[0]){
+                    sendBT("103");
+                } else {
+                    findViewById(R.id.btnArm).setVisibility(Button.INVISIBLE);
+                    findViewById(R.id.btnTakeOff).setVisibility(Button.INVISIBLE);
+                }
                 break;
             case AttributeEvent.STATE_UPDATED:
             case AttributeEvent.STATE_ARMING:
                 droneState = this.drone.getAttribute(AttributeType.STATE);
-                if(this.drone.isConnected() && droneState.isArmed())
-                    findViewById(R.id.btnTakeOff).setVisibility(Button.VISIBLE);
-                else
-                    findViewById(R.id.btnTakeOff).setVisibility(Button.INVISIBLE);
+
+                if(!controls_list[0]){
+                    if(this.drone.isConnected() && droneState.isArmed())
+                        sendBT("104");
+                    else
+                        sendBT("105");
+                } else {
+                    if(this.drone.isConnected() && droneState.isArmed())
+                        findViewById(R.id.btnTakeOff).setVisibility(Button.VISIBLE);
+                    else
+                        findViewById(R.id.btnTakeOff).setVisibility(Button.INVISIBLE);
+                }
                 break;
             case AttributeEvent.TYPE_UPDATED:
                 Type newDroneType = this.drone.getAttribute(AttributeType.TYPE);
@@ -203,6 +225,7 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
         ol = new orientationListener();
 
         if(getIntent().getExtras() != null){
+            mDevice = getIntent().getExtras().getParcelable("btdevice");
             controls_list = getIntent().getExtras().getBooleanArray("controls_lst");
         }
 
@@ -214,48 +237,7 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
         }
     }
 
-    private void initBT(){
-        mChatService = new BluetoothChatService(getApplicationContext(), new Handler(){
-            @Override
-            public void handleMessage(Message msg) {
-                switch (msg.what) {
-                    case Constants.MESSAGE_STATE_CHANGE:
-                        switch (msg.arg1) {
-                            case Constants.STATE_CONNECTED:
-                                //makeToast("State: Connected");
-                                break;
-                            case Constants.STATE_CONNECTING:
-                                //makeToast("State: Connecting");
-                                break;
-                            case Constants.STATE_LISTEN:
-                                //makeToast("State: Listening");
-                                break;
-                            case Constants.STATE_NONE:
-                                //makeToast("State: None");
-                                break;
-                        }
-                        break;
-                    case Constants.MESSAGE_WRITE:
-                        byte[] writeBuf = (byte[]) msg.obj;
-                        // construct a string from the buffer
-                        String writeMessage = new String(writeBuf);
-                        makeToast("Write: " + writeMessage);
-                        break;
-                    case Constants.MESSAGE_READ:
-                        byte[] readBuf = (byte[]) msg.obj;
-                        // construct a string from the valid bytes in the buffer
-                        String readMessage = new String(readBuf, 0, msg.arg1);
-                        parseMsg(readMessage);
-                        break;
-                    case Constants.MESSAGE_DEVICE_NAME:
-                        break;
-                    case Constants.MESSAGE_TOAST:
-                        break;
-                }
-            }
-        });
-        mChatService.start();
-    }
+
 
 
     //Launch controls actions
@@ -318,48 +300,88 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
         }
     }
 
-
-
     private void force_Guided_mode(){
         VehicleApi.getApi(this.drone).setVehicleMode(VehicleMode.COPTER_GUIDED);
     }
 
-
-    //Flight Controls
+    //Bluetooth stuff
     //=========================================================================
+    private void initBT(){
+        mChatService = new BluetoothChatService(getApplicationContext(), new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                switch (msg.what) {
+                    case Constants.MESSAGE_WRITE:
+                        byte[] writeBuf = (byte[]) msg.obj;
+                        // construct a string from the buffer
+                        String writeMessage = new String(writeBuf);
+                        makeToast("Write: " + writeMessage);
+                        break;
+                    case Constants.MESSAGE_READ:
+                        byte[] readBuf = (byte[]) msg.obj;
+                        // construct a string from the valid bytes in the buffer
+                        String readMessage = new String(readBuf, 0, msg.arg1);
+                        parseMsg(readMessage);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+        mChatService.start();
+        mChatService.connect(mDevice, true);
+    }
+
     private void parseMsg(String msg){
         int code = Integer.parseInt(msg);
 
+        //10 - launch controls
+        //20 - direction controls
+        //30 - rotation controls
+        //40 - altitude controls
+
         switch (code){
             case(101):
+                makeToast("Connecting");
+                conn();
+                break;
+            case(102):
+                makeToast("Arming");
+                arm();
+                break;
+            case(103):
+                makeToast("Taking off");
+                takeoff();
+                break;
+            case(201):
                 makeToast("Forward");
                 moveForward();
                 break;
-            case(102):
+            case(202):
                 makeToast("Right");
                 moveRight();
                 break;
-            case(103):
+            case(203):
                 makeToast("Backward");
                 moveBackward();
                 break;
-            case(104):
+            case(204):
                 makeToast("Left");
                 moveLeft();
                 break;
-            case(201):
+            case(301):
                 makeToast("Rotate Right");
                 rotateRight();
                 break;
-            case(202):
+            case(302):
                 makeToast("Rotate Left");
                 rotateLeft();
                 break;
-            case(301):
+            case(401):
                 makeToast("Increase altitude");
                 altitudeInc();
                 break;
-            case(302):
+            case(402):
                 makeToast("Decrease altitude");
                 altitudeDec();
                 break;
@@ -368,6 +390,14 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
         }
     }
 
+    private void sendBT(String s){
+        mChatService.write(s.getBytes());
+        makeToast(s);
+    }
+
+
+    //Flight Controls
+    //=========================================================================
     private void moveForward(){
         moveDrone(0.0);
     }
