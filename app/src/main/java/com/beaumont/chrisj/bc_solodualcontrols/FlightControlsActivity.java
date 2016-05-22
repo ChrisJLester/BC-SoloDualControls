@@ -46,7 +46,6 @@ public class FlightControlsActivity extends AppCompatActivity implements Compoun
         if(getIntent().getExtras() != null){
             mDevice = getIntent().getExtras().getParcelable("btdevice");
             controls_list = getIntent().getExtras().getBooleanArray("controls_lst");
-            initChatService();
         }
 
         if(controls_list != null){
@@ -60,6 +59,8 @@ public class FlightControlsActivity extends AppCompatActivity implements Compoun
         initVars();
     }
 
+    //Bluetooth stuff
+    //==============================================================================================
     private void initBT(){
         mChatService = new BluetoothChatService(getApplicationContext(), new Handler(){
             @Override
@@ -69,7 +70,7 @@ public class FlightControlsActivity extends AppCompatActivity implements Compoun
                         byte[] writeBuf = (byte[]) msg.obj;
                         // construct a string from the buffer
                         String writeMessage = new String(writeBuf);
-                        makeToast("Write: " + writeMessage);
+                        //makeToast("Write: " + writeMessage);
                         break;
                     case Constants.MESSAGE_READ:
                         byte[] readBuf = (byte[]) msg.obj;
@@ -84,21 +85,6 @@ public class FlightControlsActivity extends AppCompatActivity implements Compoun
         });
         mChatService.start();
         mChatService.connect(mDevice, true);
-    }
-
-
-    //Launch Controls
-    //==============================================================================================
-    public void onBtnConn(View v){
-        sendBT("101");
-    }
-
-    public void onBtnArm(View v){
-        sendBT("102");
-    }
-
-    public void onBtnTakeOff(View v){
-        sendBT("103");
     }
 
     private void parseMsg(String msg){
@@ -127,52 +113,71 @@ public class FlightControlsActivity extends AppCompatActivity implements Compoun
                 //Disarmed
                 findViewById(R.id.btnTakeOff).setVisibility(Button.INVISIBLE);
                 break;
+            case(106):
+                //Taken off
+                findViewById(R.id.frame_flight_takeoff).setVisibility(RelativeLayout.GONE);
+                findViewById(R.id.frame_controls).setVisibility(RelativeLayout.VISIBLE);
+                break;
+            default:
+                makeToast("unexpected number: " + code);
+                break;
+
+        }
+    }
+
+    private void sendBT(String msg){
+        mChatService.write(msg.getBytes());
+    }
+
+
+    //Launch/Flight Controls
+    //==============================================================================================
+    public void onBtnConn(View v){
+        sendBT("101");
+    }
+
+    public void onBtnArm(View v){
+        sendBT("102");
+    }
+
+    public void onBtnTakeOff(View v){
+        sendBT("103");
+    }
+
+    public void btnButtonPress(View view){
+        int btnID = view.getId();
+
+        switch (btnID){
+            case(R.id.panel_up):
+                sendBT("201");
+                break;
+            case(R.id.panel_rot_right):
+                sendBT("301");
+                break;
+            case(R.id.panel_right):
+                sendBT("202");
+                break;
+            case(R.id.panel_alt_inc):
+                sendBT("401");
+                break;
+            case(R.id.panel_down):
+                sendBT("203");
+                break;
+            case(R.id.panel_alt_dec):
+                sendBT("402");
+                break;
+            case(R.id.panel_left):
+                sendBT("204");
+                break;
+            case(R.id.panel_rot_left):
+                sendBT("302");
+                break;
         }
     }
 
 
-
-
-
-    private void initChatService(){
-        mChatService = new BluetoothChatService(getApplicationContext(), new Handler(){
-            @Override
-            public void handleMessage(Message msg) {
-                switch (msg.what) {
-                    case Constants.MESSAGE_STATE_CHANGE:
-                        switch (msg.arg1) {
-                            case Constants.STATE_CONNECTED:
-                                frame_connect.setVisibility(RelativeLayout.GONE);
-                                frame_controls.setVisibility(TableLayout.VISIBLE);
-
-                                displayOptions();
-
-                                break;
-                            case Constants.STATE_CONNECTING:
-                                break;
-                            case Constants.STATE_NONE:
-                                makeToast("State: None");
-                                break;
-                            default:
-                                break;
-                        }
-                        break;
-                    case Constants.MESSAGE_WRITE:
-                        break;
-                    case Constants.MESSAGE_READ:
-                        byte[] readBuf = (byte[]) msg.obj;
-                        String readMessage = new String(readBuf, 0, msg.arg1);
-                        makeToast(readMessage);
-                        break;
-                    case Constants.MESSAGE_DEVICE_NAME:
-                        break;
-                    case Constants.MESSAGE_TOAST:
-                        break;
-                }
-            }
-        });
-    }
-
+    //Other
+    //==============================================================================================
     private void displayOptions(){
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(FlightControlsActivity.this);
         LayoutInflater inflater = getLayoutInflater();
@@ -207,41 +212,6 @@ public class FlightControlsActivity extends AppCompatActivity implements Compoun
             displayOptions();
         else
             super.onBackPressed();
-    }
-
-    public void btnButtonPress(View view){
-        int btnID = view.getId();
-
-        switch (btnID){
-            case(R.id.panel_up):
-                sendBT("201");
-                break;
-            case(R.id.panel_rot_right):
-                sendBT("301");
-                break;
-            case(R.id.panel_right):
-                sendBT("202");
-                break;
-            case(R.id.panel_alt_inc):
-                sendBT("401");
-                break;
-            case(R.id.panel_down):
-                sendBT("203");
-                break;
-            case(R.id.panel_alt_dec):
-                sendBT("402");
-                break;
-            case(R.id.panel_left):
-                sendBT("204");
-                break;
-            case(R.id.panel_rot_left):
-                sendBT("302");
-                break;
-        }
-    }
-
-    private void sendBT(String msg){
-        mChatService.write(msg.getBytes());
     }
 
     @Override
@@ -335,7 +305,6 @@ public class FlightControlsActivity extends AppCompatActivity implements Compoun
     }
 
 
-    RelativeLayout frame_connect;
     TableLayout frame_controls;
 
     ImageView btnUp;

@@ -14,6 +14,7 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -53,10 +54,10 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
     private int droneType = Type.TYPE_UNKNOWN;
     private final Handler handler = new Handler();
     private boolean towerConn;
-    private boolean isFlying;
     private double drone_yaw;
     private double target_yaw;
     private double yaw_before_action;
+    private boolean launch_procedure;
 
     //Drone movement Variables
     private int MOVEMENT_YAW;
@@ -64,13 +65,14 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
     private int MOVEMENT_DEG;
     private float TURN_SPD;
     private int YAW_CHK_DUR;
+    private int LAUNCH_HGHT;
 
     //Stream Variables
     private boolean stream_loaded;
     GimbalApi.GimbalOrientation orientation;
     public orientationListener ol;
 
-    Button btnConn, btnLaunch, btnLoadStream;
+    Button btnLoadStream;
     TextureView stream;
 
     boolean[] controls_list;
@@ -130,6 +132,7 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
                     if (droneState.isFlying()) {
                         findViewById(R.id.frame_stream_takeoff).setVisibility(RelativeLayout.GONE);
                         findViewById(R.id.frame_stream).setVisibility(RelativeLayout.VISIBLE);
+                        launch_procedure = false;
                     } else
                         findViewById(R.id.btnArm).setVisibility(Button.VISIBLE);
                 }
@@ -183,6 +186,9 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
         MOVEMENT_DEG = 90;
         TURN_SPD = 0.5f;
         YAW_CHK_DUR = 5000;
+        LAUNCH_HGHT = 15;
+
+        launch_procedure = true;
 
         this.controlTower = new ControlTower(getApplicationContext());
         this.drone = new Drone(getApplicationContext());
@@ -238,8 +244,6 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
     }
 
 
-
-
     //Launch controls actions
     //=========================================================================
     public void onBtnConn(View v){
@@ -281,7 +285,7 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
     private void takeoff(){
         State vehicleState = this.drone.getAttribute(AttributeType.STATE);
         if(vehicleState.isConnected() && vehicleState.isArmed() && !vehicleState.isFlying()){
-            ControlApi.getApi(this.drone).takeoff(15, new AbstractCommandListener() {
+            ControlApi.getApi(this.drone).takeoff(LAUNCH_HGHT, new AbstractCommandListener() {
                 @Override
                 public void onSuccess() {
 
@@ -564,6 +568,23 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
     protected void updateAttitude(){
         Attitude droneAttitude = this.drone.getAttribute(AttributeType.ATTITUDE);
         drone_yaw = droneAttitude.getYaw();
+
+        if(launch_procedure) {
+            Altitude droneAlt = this.drone.getAttribute(AttributeType.ALTITUDE);
+            double alt = droneAlt.getAltitude();
+
+            if ((alt > (LAUNCH_HGHT - 1))) {
+                if (controls_list[0]) {
+                    findViewById(R.id.frame_stream_takeoff).setVisibility(RelativeLayout.GONE);
+                    findViewById(R.id.frame_stream).setVisibility(RelativeLayout.VISIBLE);
+                } else {
+                    sendBT("106");
+                }
+                launch_procedure = false;
+            }
+        }
+
+
     }
 
 
