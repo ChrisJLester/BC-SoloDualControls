@@ -15,6 +15,7 @@ import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -75,7 +76,7 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
     Button btnLoadStream;
     TextureView stream;
 
-    boolean[] controls_list;
+    boolean[] controls_list;        //0: Launch Controls  1: Stream Controls  2: Flight Controls  3: Land/Stop Controls
 
     @Override
     public void onStart() {
@@ -125,9 +126,9 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
 
                 if(!controls_list[0]){
                     if(droneState.isFlying()){
-                        sendBT("101");
+                        sendBT("301");
                     } else
-                        sendBT("102");
+                        sendBT("302");
                 } else {
                     if (droneState.isFlying()) {
                         findViewById(R.id.frame_stream_takeoff).setVisibility(RelativeLayout.GONE);
@@ -140,7 +141,7 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
             case AttributeEvent.STATE_DISCONNECTED:
                 makeToast("Drone Disconnected");
                 if(!controls_list[0]){
-                    sendBT("103");
+                    sendBT("303");
                 } else {
                     findViewById(R.id.btnArm).setVisibility(Button.INVISIBLE);
                     findViewById(R.id.btnTakeOff).setVisibility(Button.INVISIBLE);
@@ -152,9 +153,9 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
 
                 if(!controls_list[0]){
                     if(this.drone.isConnected() && droneState.isArmed())
-                        sendBT("104");
+                        sendBT("304");
                     else
-                        sendBT("105");
+                        sendBT("305");
                 } else {
                     if(this.drone.isConnected() && droneState.isArmed())
                         findViewById(R.id.btnTakeOff).setVisibility(Button.VISIBLE);
@@ -240,6 +241,9 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
                 findViewById(R.id.frame_stream_takeoff).setVisibility(RelativeLayout.GONE);
                 findViewById(R.id.frame_stream).setVisibility(RelativeLayout.VISIBLE);
             }
+
+            if(!controls_list[3])
+                findViewById(R.id.panel_stream_stop).setVisibility(LinearLayout.INVISIBLE);
         }
     }
 
@@ -308,6 +312,39 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
         VehicleApi.getApi(this.drone).setVehicleMode(VehicleMode.COPTER_GUIDED);
     }
 
+    public void onBtnStop(View view){
+        drone_stop();
+    }
+
+    private void drone_stop(){
+        ControlApi.getApi(this.drone).pauseAtCurrentLocation(new AbstractCommandListener() {
+            @Override
+            public void onSuccess() {
+
+            }
+
+            @Override
+            public void onError(int executionError) {
+                read_executionError("Failed to pause", executionError);
+            }
+
+            @Override
+            public void onTimeout() {
+                makeToast("Failed to pause (Timeout)");
+            }
+        });
+    }
+
+    public void onBtnLand(View v){
+
+    }
+
+    private void drone_land(){
+        VehicleApi.getApi(this.drone).setVehicleMode(VehicleMode.COPTER_RTL);
+    }
+
+
+
     //Bluetooth stuff
     //=========================================================================
     private void initBT(){
@@ -332,7 +369,6 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
                 }
             }
         });
-        mChatService.start();
         mChatService.connect(mDevice, true);
     }
 
@@ -345,58 +381,69 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
         //40 - altitude controls
 
         switch (code){
-            case(101):
+            case(201):
                 makeToast("Connecting");
                 conn();
                 break;
-            case(102):
+            case(202):
                 makeToast("Arming");
                 arm();
                 break;
-            case(103):
+            case(203):
                 makeToast("Taking off");
                 takeoff();
                 break;
-            case(201):
+            case(204):
                 makeToast("Forward");
                 moveForward();
                 break;
-            case(202):
+            case(205):
                 makeToast("Right");
                 moveRight();
                 break;
-            case(203):
+            case(206):
                 makeToast("Backward");
                 moveBackward();
                 break;
-            case(204):
+            case(207):
                 makeToast("Left");
                 moveLeft();
                 break;
-            case(301):
+            case(208):
                 makeToast("Rotate Right");
                 rotateRight();
                 break;
-            case(302):
+            case(209):
                 makeToast("Rotate Left");
                 rotateLeft();
                 break;
-            case(401):
+            case(210):
                 makeToast("Increase altitude");
                 altitudeInc();
                 break;
-            case(402):
+            case(211):
                 makeToast("Decrease altitude");
                 altitudeDec();
                 break;
+            case(212):
+                super.onBackPressed();
+                break;
+            case(213):
+                makeToast("Stopping");
+                drone_stop();
+                break;
+            case(214):
+                makeToast("Landing");
+                drone_land();
+                break;
             default:
+                makeToast("Stream: unexpected number: " + code);
                 break;
         }
     }
 
     private void sendBT(String s){
         mChatService.write(s.getBytes());
-        makeToast(s);
     }
 
 
@@ -578,7 +625,7 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
                     findViewById(R.id.frame_stream_takeoff).setVisibility(RelativeLayout.GONE);
                     findViewById(R.id.frame_stream).setVisibility(RelativeLayout.VISIBLE);
                 } else {
-                    sendBT("106");
+                    sendBT("306");
                 }
                 launch_procedure = false;
             }
@@ -709,6 +756,16 @@ public class StreamControlsActivity extends AppCompatActivity implements TowerLi
                 makeToast("Gimball error: unsupported");
             else
                 makeToast("Error didn't match");
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(findViewById(R.id.frame_stream).getVisibility() == RelativeLayout.VISIBLE)
+            makeToast("hello");
+        else {
+            sendBT("307");
+            super.onBackPressed();
         }
     }
 

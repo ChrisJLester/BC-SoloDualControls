@@ -72,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         enable_DD();
+
+        reset();
     }
 
     //Setup
@@ -186,58 +188,58 @@ public class MainActivity extends AppCompatActivity {
         int code = Integer.parseInt(s);
 
         switch (code) {
-            case (999):
+            case (101):
                 reset();
                 break;
-            case (998):
+            case (102):
                 findViewById(R.id.btnStart).setVisibility(Button.VISIBLE);
                 break;
-            case (997):
+            case (103):
                 start();
                 break;
-            case (101):
+            case (104):
                 findViewById(R.id.lblLaunchCons).setVisibility(TextView.INVISIBLE);
                 findViewById(R.id.lc_2).setVisibility(TextView.VISIBLE);
                 break;
-            case (102):
+            case (105):
                 findViewById(R.id.lblStreamCons).setVisibility(TextView.INVISIBLE);
                 findViewById(R.id.lblFlightCons).setVisibility(TextView.INVISIBLE);
                 findViewById(R.id.sc_2).setVisibility(TextView.VISIBLE);
                 findViewById(R.id.fc_1).setVisibility(TextView.VISIBLE);
                 deviceA[2] = true;
                 break;
-            case (103):
+            case (106):
                 findViewById(R.id.lblFlightCons).setVisibility(TextView.INVISIBLE);
                 findViewById(R.id.lblStreamCons).setVisibility(TextView.INVISIBLE);
                 findViewById(R.id.fc_2).setVisibility(TextView.VISIBLE);
                 findViewById(R.id.sc_1).setVisibility(TextView.VISIBLE);
                 deviceA[1] = true;
                 break;
-            case (104):
+            case (107):
                 findViewById(R.id.lblLandCons).setVisibility(TextView.INVISIBLE);
                 findViewById(R.id.lsc_2).setVisibility(TextView.VISIBLE);
                 break;
 
-            case (201):
+            case (108):
                 findViewById(R.id.lblLaunchCons).setVisibility(TextView.INVISIBLE);
                 findViewById(R.id.lc_1).setVisibility(TextView.VISIBLE);
                 deviceA[0] = true;
                 break;
-            case (202):
+            case (109):
                 findViewById(R.id.lblStreamCons).setVisibility(TextView.INVISIBLE);
                 findViewById(R.id.lblFlightCons).setVisibility(TextView.INVISIBLE);
                 findViewById(R.id.sc_1).setVisibility(TextView.VISIBLE);
                 findViewById(R.id.fc_2).setVisibility(TextView.VISIBLE);
                 deviceA[1] = true;
                 break;
-            case (203):
+            case (110):
                 findViewById(R.id.lblFlightCons).setVisibility(TextView.INVISIBLE);
                 findViewById(R.id.lblStreamCons).setVisibility(TextView.INVISIBLE);
                 findViewById(R.id.fc_1).setVisibility(TextView.VISIBLE);
                 findViewById(R.id.sc_2).setVisibility(TextView.VISIBLE);
                 deviceA[2] = true;
                 break;
-            case (204):
+            case (111):
                 findViewById(R.id.lblLandCons).setVisibility(TextView.INVISIBLE);
                 findViewById(R.id.lsc_1).setVisibility(TextView.VISIBLE);
                 deviceA[3] = true;
@@ -247,7 +249,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         Button btnReset = (Button) findViewById(R.id.btnRestart);
-        if((code < 997) && (btnReset.getVisibility() == Button.INVISIBLE))
+        if((code > 103) && (btnReset.getVisibility() == Button.INVISIBLE))
             btnReset.setVisibility(Button.VISIBLE);
     }
 
@@ -255,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
     //Button actions
     //==============================================================================================
     public void onBtnReset(View v){
-        sendBT("999");
+        sendBT("101");
         reset();
     }
 
@@ -283,7 +285,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onBtnStart(View v){
-        sendBT("997");
+        sendBT("103");
         start();
     }
 
@@ -366,26 +368,26 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.lblLaunchCons:
                     findViewById(R.id.lc_1).setVisibility(TextView.VISIBLE);
                     deviceA[0] = true;
-                    sendBT("101");
+                    sendBT("104");
                     break;
                 case R.id.lblStreamCons:
                     findViewById(R.id.sc_1).setVisibility(TextView.VISIBLE);
                     findViewById(R.id.fc_2).setVisibility(TextView.VISIBLE);
                     findViewById(R.id.lblFlightCons).setVisibility(TextView.INVISIBLE);
                     deviceA[1] = true;
-                    sendBT("102");
+                    sendBT("105");
                     break;
                 case R.id.lblFlightCons:
                     findViewById(R.id.fc_1).setVisibility(TextView.VISIBLE);
                     findViewById(R.id.sc_2).setVisibility(TextView.VISIBLE);
                     findViewById(R.id.lblStreamCons).setVisibility(TextView.INVISIBLE);
                     deviceA[2] = true;
-                    sendBT("103");
+                    sendBT("106");
                     break;
                 case R.id.lblLandCons:
                     findViewById(R.id.lsc_1).setVisibility(TextView.VISIBLE);
                     deviceA[3] = true;
-                    sendBT("104");
+                    sendBT("107");
                     break;
                 default:
                     break;
@@ -394,25 +396,25 @@ public class MainActivity extends AppCompatActivity {
             switch (dragged_lbl){
                 case R.id.lblLaunchCons:
                     findViewById(R.id.lc_2).setVisibility(TextView.VISIBLE);
-                    sendBT("201");
+                    sendBT("108");
                     break;
                 case R.id.lblStreamCons:
                     findViewById(R.id.sc_2).setVisibility(TextView.VISIBLE);
                     findViewById(R.id.fc_1).setVisibility(TextView.VISIBLE);
                     findViewById(R.id.lblFlightCons).setVisibility(TextView.INVISIBLE);
                     deviceA[2] = true;
-                    sendBT("202");
+                    sendBT("109");
                     break;
                 case R.id.lblFlightCons:
                     findViewById(R.id.fc_2).setVisibility(TextView.VISIBLE);
                     findViewById(R.id.sc_1).setVisibility(TextView.VISIBLE);
                     findViewById(R.id.lblStreamCons).setVisibility(TextView.INVISIBLE);
                     deviceA[1] = true;
-                    sendBT("203");
+                    sendBT("110");
                     break;
                 case R.id.lblLandCons:
                     findViewById(R.id.lsc_2).setVisibility(TextView.VISIBLE);
-                    sendBT("204");
+                    sendBT("111");
                     break;
                 default:
                     break;
@@ -425,12 +427,18 @@ public class MainActivity extends AppCompatActivity {
                 findViewById(R.id.lblLandCons).getVisibility() == TextView.INVISIBLE){
 
             findViewById(R.id.btnStart).setVisibility(Button.VISIBLE);
-            sendBT("998");
+            sendBT("102");
         }
 
     }
 
     private void makeToast(String m){
         Toast.makeText(getApplicationContext(), m, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onResume(){
+        reset();
+        super.onResume();
     }
 }

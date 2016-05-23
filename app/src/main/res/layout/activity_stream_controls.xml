@@ -8,14 +8,14 @@
     <RelativeLayout android:id="@+id/frame_stream_takeoff"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <include layout="@layout/frame_takeoff"/>
 
     </RelativeLayout>
 
     <LinearLayout android:id="@+id/frame_stream"
-        android:visibility="invisible"
+        android:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingBottom="@dimen/activity_vertical_margin"
@@ -24,11 +24,43 @@
         android:paddingTop="@dimen/activity_vertical_margin"
         android:orientation="vertical">
 
-        <TextureView
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="5"
-            android:id="@+id/stream"/>
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:id="@+id/panel_stream_stop"
+                android:padding="@dimen/activity_vertical_margin">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:text="Stop"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:onClick="onBtnStop"/>
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:text="Land"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:onClick="onbtnLand"/>
+
+            </LinearLayout>
+
+            <TextureView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/stream" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"

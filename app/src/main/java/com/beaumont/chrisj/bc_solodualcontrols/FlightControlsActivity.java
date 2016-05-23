@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
@@ -33,7 +34,7 @@ public class FlightControlsActivity extends AppCompatActivity implements Compoun
     boolean display_arrows;
     boolean display_text;
 
-    boolean[] controls_list;
+    boolean[] controls_list;         //0: Launch Controls  1: Stream Controls  2: Flight Controls  3: Land/Stop Controls
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +54,11 @@ public class FlightControlsActivity extends AppCompatActivity implements Compoun
                 findViewById(R.id.frame_flight_takeoff).setVisibility(RelativeLayout.GONE);
                 findViewById(R.id.frame_controls).setVisibility(TableLayout.VISIBLE);
             }
+
+            if(!controls_list[3])
+                findViewById(R.id.panel_flight_stop).setVisibility(LinearLayout.INVISIBLE);
+
+
         }
 
         initBT();
@@ -83,7 +89,6 @@ public class FlightControlsActivity extends AppCompatActivity implements Compoun
                 }
             }
         });
-        mChatService.start();
         mChatService.connect(mDevice, true);
     }
 
@@ -91,57 +96,60 @@ public class FlightControlsActivity extends AppCompatActivity implements Compoun
         int code = Integer.parseInt(msg);
 
         switch (code){
-            case(101):
+            case(301):
                 //Already Flying
                 findViewById(R.id.frame_flight_takeoff).setVisibility(RelativeLayout.GONE);
                 findViewById(R.id.frame_controls).setVisibility(RelativeLayout.VISIBLE);
                 break;
-            case(102):
+            case(302):
                 //Connected
                 findViewById(R.id.btnArm).setVisibility(Button.VISIBLE);
                 break;
-            case(103):
+            case(303):
                 //Disconnected
                 findViewById(R.id.btnArm).setVisibility(Button.INVISIBLE);
                 findViewById(R.id.btnTakeOff).setVisibility(Button.INVISIBLE);
                 break;
-            case(104):
+            case(304):
                 //Armed
                 findViewById(R.id.btnTakeOff).setVisibility(Button.VISIBLE);
                 break;
-            case(105):
+            case(305):
                 //Disarmed
                 findViewById(R.id.btnTakeOff).setVisibility(Button.INVISIBLE);
                 break;
-            case(106):
+            case(306):
                 //Taken off
                 findViewById(R.id.frame_flight_takeoff).setVisibility(RelativeLayout.GONE);
                 findViewById(R.id.frame_controls).setVisibility(RelativeLayout.VISIBLE);
                 break;
+            case(307):
+                super.onBackPressed();
+                break;
             default:
-                makeToast("unexpected number: " + code);
+                makeToast("Stream: unexpected number: " + code);
                 break;
 
         }
     }
 
-    private void sendBT(String msg){
-        mChatService.write(msg.getBytes());
+    private void sendBT(String s){
+        mChatService.write(s.getBytes());
     }
 
 
     //Launch/Flight Controls
     //==============================================================================================
     public void onBtnConn(View v){
-        sendBT("101");
+        sendBT("201");
     }
 
     public void onBtnArm(View v){
-        sendBT("102");
+        sendBT("202");
     }
 
     public void onBtnTakeOff(View v){
-        sendBT("103");
+        sendBT("203");
     }
 
     public void btnButtonPress(View view){
@@ -149,30 +157,40 @@ public class FlightControlsActivity extends AppCompatActivity implements Compoun
 
         switch (btnID){
             case(R.id.panel_up):
-                sendBT("201");
-                break;
-            case(R.id.panel_rot_right):
-                sendBT("301");
-                break;
-            case(R.id.panel_right):
-                sendBT("202");
-                break;
-            case(R.id.panel_alt_inc):
-                sendBT("401");
-                break;
-            case(R.id.panel_down):
-                sendBT("203");
-                break;
-            case(R.id.panel_alt_dec):
-                sendBT("402");
-                break;
-            case(R.id.panel_left):
                 sendBT("204");
                 break;
+            case(R.id.panel_rot_right):
+                sendBT("205");
+                break;
+            case(R.id.panel_right):
+                sendBT("206");
+                break;
+            case(R.id.panel_alt_inc):
+                sendBT("207");
+                break;
+            case(R.id.panel_down):
+                sendBT("208");
+                break;
+            case(R.id.panel_alt_dec):
+                sendBT("209");
+                break;
+            case(R.id.panel_left):
+                sendBT("210");
+                break;
             case(R.id.panel_rot_left):
-                sendBT("302");
+                sendBT("211");
+                break;
+            default:
                 break;
         }
+    }
+
+    public void onBtnStop(View view){
+        sendBT("213");
+    }
+
+    public void onBtnLand(View view){
+        sendBT("214");
     }
 
 
@@ -210,8 +228,10 @@ public class FlightControlsActivity extends AppCompatActivity implements Compoun
     public void onBackPressed() {
         if(frame_controls.getVisibility() == RelativeLayout.VISIBLE)
             displayOptions();
-        else
+        else {
+            sendBT("212");
             super.onBackPressed();
+        }
     }
 
     @Override
@@ -234,9 +254,7 @@ public class FlightControlsActivity extends AppCompatActivity implements Compoun
                 break;
 
         }
-
         updateControls();
-
     }
 
     private void updateControls(){
